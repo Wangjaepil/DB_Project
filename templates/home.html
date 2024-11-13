@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>영화 검색 사이트</title>
+        <meta charset="utf-8">
+        <style>
+            /* 기본 스타일 */
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f9f9f9;
+                color: #333;
+                margin: 0;
+                padding: 0;
+            }
+
+            header {
+                background-color: #4CAF50;
+                color: white;
+                text-align: center;
+                padding: 20px 0;
+                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            }
+
+            h1 {
+                margin: 0;
+                font-size: 2rem;
+            }
+
+            main {
+                max-width: 800px;
+                margin: 20px auto;
+                padding: 20px;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            input[type="text"],
+            input[type="number"] {
+                width: 100%;
+                padding: 8px;
+                margin-bottom: 15px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 1rem;
+            }
+
+            input[type="submit"] {
+                background-color: #4CAF50;
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 4px;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+            input[type="submit"]:hover {
+                background-color: #45a049;
+            }
+
+            /* 장르 체크박스 스타일 */
+            .genre-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px; /* 간격 추가 */
+                margin-bottom: 20px;
+            }
+
+            .genre-container label {
+                flex: 0 0 calc(50% - 10px); /* 각 항목이 50% 너비를 차지 */
+                box-sizing: border-box;
+                background: #f0f0f0;
+                padding: 10px;
+                border-radius: 4px;
+                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+            }
+
+            .genre-container input[type="checkbox"] {
+                margin-right: 10px;
+            }
+
+            .genre-container label:hover {
+                background-color: #e8f5e9;
+                transform: translateY(-2px);
+            }
+
+            footer {
+                text-align: center;
+                padding: 20px;
+                margin-top: 20px;
+                background-color: #4CAF50;
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>영화 검색 사이트</h1>
+        </header>
+        <main>
+            <!-- 기본 검색 -->
+            <form>
+                <p>
+                    <label for="textinput">영화 이름</label>
+                    <input type="text" id="textinput" name="q" placeholder="영화 이름을 입력하세요">
+                </p>
+                <input type="submit" value="검색">
+            </form>
+            <hr>
+
+            <!-- 고급 검색 -->
+            <h2>고급 검색</h2>
+            <form>
+                <!-- 장르 선택 -->
+                <label>장르:</label>
+                <div class="genre-container">
+                    <label><input type="checkbox" name="genre" value="drama"> 드라마</label>
+                    <label><input type="checkbox" name="genre" value="comedy"> 코미디</label>
+                    <label><input type="checkbox" name="genre" value="action"> 액션</label>
+                    <label><input type="checkbox" name="genre" value="romance"> 멜로/로맨스</label>
+                    <label><input type="checkbox" name="genre" value="thriller"> 스릴러</label>
+                    <label><input type="checkbox" name="genre" value="mystery"> 미스터리</label>
+                    <label><input type="checkbox" name="genre" value="horror"> 공포(호러)</label>
+                    <label><input type="checkbox" name="genre" value="adventure"> 어드벤처</label>
+                    <label><input type="checkbox" name="genre" value="crime"> 범죄</label>
+                    <label><input type="checkbox" name="genre" value="family"> 가족</label>
+                    <label><input type="checkbox" name="genre" value="fantasy"> 판타지</label>
+                    <label><input type="checkbox" name="genre" value="sf"> SF</label>
+                    <label><input type="checkbox" name="genre" value="western"> 서부극(웨스턴)</label>
+                    <label><input type="checkbox" name="genre" value="historical"> 사극</label>
+                    <label><input type="checkbox" name="genre" value="animation"> 애니메이션</label>
+                    <label><input type="checkbox" name="genre" value="documentary"> 다큐멘터리</label>
+                    <label><input type="checkbox" name="genre" value="war"> 전쟁</label>
+                    <label><input type="checkbox" name="genre" value="musical"> 뮤지컬</label>
+                    <label><input type="checkbox" name="genre" value="adult"> 성인물(에로)</label>
+                    <label><input type="checkbox" name="genre" value="performance"> 공연</label>
+                    <label><input type="checkbox" name="genre" value="other"> 기타</label>
+                </div>
+
+                <label for="production-year">제작 연도:</label>
+                <input type="number" id="production-year" name="production-year" placeholder="예: 2020">
+
+                <label for="country">제작 국가:</label>
+                <input type="text" id="country" name="country" placeholder="예: 대한민국">
+
+                <label for="studio">제작사:</label>
+                <input type="text" id="studio" name="studio" placeholder="예: 영화사 이름">
+
+                <label for="director">감독 이름:</label>
+                <input type="text" id="director" name="director" placeholder="감독 이름 입력">
+
+                <input type="submit" value="고급 검색">
+            </form>
+        </main>
+        <footer>
+            © 2024 영화 검색 사이트
+        </footer>
+    </body>
+</html>
