@@ -105,11 +105,14 @@
     </head>
     <body>
         <header>
-            <h1>영화 검색 사이트</h1>
+            <h1>
+                <img src="{{ url_for('static', filename='Icon.jpg') }}" alt="영화검색사이트" style ="width: 70px; height: auto;">
+                영화검색사이트
+            </h1>
         </header>
         <main>
             <!-- 기본 검색 -->
-            <form>
+            <form action = "/home/Search/" method = "GET">
                 <p>
                     <label for="textinput">영화 이름</label>
                     <input type="text" id="textinput" name="q" placeholder="영화 이름을 입력하세요">
@@ -163,7 +166,7 @@
             </form>
         </main>
         <footer>
-            © 2024 영화 검색 사이트
+            Made by 김석진, 이재필
         </footer>
     </body>
 </html>
