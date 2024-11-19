@@ -70,11 +70,13 @@
         </header>
         <div class="content">
             <p><span class="highlight">영화 제목 : {{name}}</span></p>
-            <p>영화 정보 냐열</p>
+            <p>영화 정보 나열</p>
             <ul>
-            {% for movie in Imformation %}
-                <li>{{movie}}</li>
-            {% endfor %}
+                {% for att, movie in zip(Att_name, Info[0]) %}
+                    {% if movie %}
+                        <li>{{att}} : {{movie}}</li>
+                    {% endif %}
+                {% endfor %}
             </ul>
         </div>
     </body>

@@ -17,11 +17,16 @@ def home():
 @app.route('/home/Search/', methods=['GET'])
 def SearchMovie():
     movie_name = request.args.get("q")  # HTML 폼에서 전달된 'q' 값, 즉 이름 입력한 거를 가져옴
-    db = sqlite3.connect('./DB_Project/movie.db')
+    db = sqlite3.connect('.//movie_Info.db')
     cursor = db.cursor()
-    Info = cursor.execute('SELECT 영화명, 제작연도, 국적, 유형, 장르, 제작상태, 감독, 제작사  FROM Movie_Search WHERE 영화명=?', (movie_name,)).fetchall()
+    cursor.execute("PRAGMA table_info(movie_Info)")
+    Attribute_name = cursor.fetchall()
+    Att_name = [ATName[1] for ATName in Attribute_name][1:]
+    Info = cursor.execute('SELECT 영화명, "영화명(영어)", 제작연도, 상영시간, 개봉연도, 제작상태, 영화유형, 제작국가,' 
+                          '장르, 감독, 주연배우, 상영형태, 관람등급, 영화사 FROM movie_Info WHERE 영화명=? or "영화명(영어)"=?', 
+                          (movie_name, movie_name,)).fetchall()
     db.close()
-    return render_template("search.html", name=movie_name, Imformation=Info)
+    return render_template("search.html", name=movie_name, Att_name=Att_name, Info=Info, zip=zip)
 
 if __name__ == '__main__':
     app.debug = True
