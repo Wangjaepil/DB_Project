@@ -124,7 +124,7 @@
 
             <!-- 고급 검색 -->
             <h2>고급 검색</h2>
-            <form>
+            <form action = "/home/Advanced_Search/" method = "GET">
                 <!-- 장르 선택 -->
                 <label>장르:</label>
                 <div class="genre-container">
@@ -155,13 +155,16 @@
                 <input type="number" id="production-year" name="production-year" placeholder="예: 2020">
 
                 <label for="country">제작 국가:</label>
-                <input type="text" id="country" name="country" placeholder="예: 대한민국">
+                <input type="text" id="country" name="country" placeholder="예: 한국">
+
+                <label for="director">감독:</label>
+                <input type="text" id="director" name="director" placeholder="감독 이름 입력">
+                
+                <label for="Grade">관람 등급:</label>
+                <input type="text" id="Grade" name="Grade" placeholder="관람 등급 해야되는데 이것도 나중에 체크칸으로 만들자">
 
                 <label for="studio">제작사:</label>
-                <input type="text" id="studio" name="studio" placeholder="예: 영화사 이름">
-
-                <label for="director">감독 이름:</label>
-                <input type="text" id="director" name="director" placeholder="감독 이름 입력">
+                <input type="text" id="studio" name="studio" placeholder="영화사 이름 입력">
 
                 <input type="submit" value="고급 검색">
             </form>
