@@ -25,13 +25,30 @@ def SearchMovie():
 
 @app.route('/home/Advanced_Search/')
 def Advanced():
+    Director = request.args.get("director")
     Country = request.args.get("country")
+    Company = request.args.get("studio")
     db = sqlite3.connect('.//movie_Info.db')
     cursor = db.cursor()
-    Movie_country = cursor.execute('SELECT 영화명, 장르, 제작국가, 감독, 관람등급, 영화사 '
-                                   'FROM movie_Info WHERE 제작국가=?', (Country,)).fetchall()
+    query = '''
+    SELECT 영화명, 장르, 제작국가, 감독, 관람등급, 영화사
+    FROM movie_Info
+    WHERE 1=1
+    '''
+    params = []
+    if Country:
+        query += " AND 제작국가=?"
+        params.append(Country)
+    if Director:
+        query += " AND 감독=?"
+        params.append(Director)
+    if Company:
+        query += " AND 영화사=?"
+        params.append(Company)
+    Movie_table = cursor.execute(query, tuple(params)).fetchall()
+
     db.close()
-    return render_template('Advanced_Search.html', Movie_country=Movie_country)
+    return render_template('Advanced_Search.html', Movie_table=Movie_table)
 
 if __name__ == '__main__':
     app.debug = True
