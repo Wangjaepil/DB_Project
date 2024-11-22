@@ -28,14 +28,23 @@ def Advanced():
     Director = request.args.get("director")
     Country = request.args.get("country")
     Company = request.args.get("studio")
+    Opdate_start = request.args.get("date_start") 
+    Opdate_end = request.args.get("date_end")  
     db = sqlite3.connect('.//movie_Info.db')
     cursor = db.cursor()
     query = '''
-    SELECT 영화명, 장르, 제작국가, 감독, 관람등급, 영화사
+    SELECT 영화명, 장르, 개봉일자, 제작국가, 감독, 관람등급, 영화사
     FROM movie_Info
     WHERE 1=1
     '''
     params = []
+
+    if Opdate_start:
+        query += " AND 개봉일자 >= ?"
+        params.append(Opdate_start.replace("-", "")) #date형식으로 받았는데 데이터에는 int형식이라서 이걸로 바꿈
+    if Opdate_end:
+        query += " AND 개봉일자 <= ?"
+        params.append(Opdate_end.replace("-", "")) #이것도 마찬가지
     if Country:
         query += " AND 제작국가=?"
         params.append(Country)
@@ -46,7 +55,6 @@ def Advanced():
         query += " AND 영화사=?"
         params.append(Company)
     Movie_table = cursor.execute(query, tuple(params)).fetchall()
-
     db.close()
     return render_template('Advanced_Search.html', Movie_table=Movie_table)
 

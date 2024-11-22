@@ -68,14 +68,14 @@
             }
 
             /* 장르 체크박스 스타일 */
-            .genre-container {
+            .container {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 10px; /* 간격 추가 */
                 margin-bottom: 20px;
             }
 
-            .genre-container label {
+            .container label {
                 flex: 0 0 calc(50% - 10px); /* 각 항목이 50% 너비를 차지 */
                 box-sizing: border-box;
                 background: #f0f0f0;
@@ -86,13 +86,20 @@
                 transition: background-color 0.3s ease, transform 0.2s ease;
             }
 
-            .genre-container input[type="checkbox"] {
+            .container input[type="checkbox"] {
                 margin-right: 10px;
             }
 
-            .genre-container label:hover {
+            .container label:hover {
                 background-color: #e8f5e9;
                 transform: translateY(-2px);
+            }
+
+            .date-inputs {
+            display: flex;
+            gap: 10px; /* 필드 간 간격 */
+            align-items: center; /* 라벨과 필드의 세로 정렬 */
+            margin-bottom: 15px;
             }
 
             footer {
@@ -127,7 +134,7 @@
             <form action = "/home/Advanced_Search/" method = "GET">
                 <!-- 장르 선택 -->
                 <label>장르:</label>
-                <div class="genre-container">
+                <div class="container">
                     <label><input type="checkbox" name="genre" value="drama"> 드라마</label>
                     <label><input type="checkbox" name="genre" value="comedy"> 코미디</label>
                     <label><input type="checkbox" name="genre" value="action"> 액션</label>
@@ -151,8 +158,13 @@
                     <label><input type="checkbox" name="genre" value="other"> 기타</label>
                 </div>
 
-                <label for="production-year">제작 연도:</label>
-                <input type="number" id="production-year" name="production-year" placeholder="예: 2020">
+                <div class="date-inputs">
+                    <label for="date_start">개봉 일자:</label>
+                    <input type="date" id="date_start" name="date_start">
+                
+                    <label for="date_end">~</label>
+                    <input type="date" id="date_end" name="date_end">
+                </div>
 
                 <label for="country">제작 국가:</label>
                 <input type="text" id="country" name="country" placeholder="예: 한국">
@@ -161,7 +173,13 @@
                 <input type="text" id="director" name="director" placeholder="감독 이름 입력">
                 
                 <label for="Grade">관람 등급:</label>
-                <input type="text" id="Grade" name="Grade" placeholder="관람 등급 해야되는데 이것도 나중에 체크칸으로 만들자">
+                <div class="container">
+                <label><input type="checkbox" name="Grade" value="allG">전체이용가</label>
+                <label><input type="checkbox" name="Grade" value="tweG">12세 이상 관람가</label>
+                <label><input type="checkbox" name="Grade" value="fifG">15세 이상 관람가</label>
+                <label><input type="checkbox" name="Grade" value="aduG">청소년 관람 불가</label>
+                <label><input type="checkbox" name="Grade" value="limG">제한상영가</label>
+                </div>
 
                 <label for="studio">제작사:</label>
                 <input type="text" id="studio" name="studio" placeholder="영화사 이름 입력">

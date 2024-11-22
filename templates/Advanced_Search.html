@@ -58,6 +58,7 @@
                 <tr>
                     <th>영화명</th>
                     <th>장르</th>
+                    <th>개봉일자</th>
                     <th>국가</th>
                     <th>감독</th>
                     <th>관람등급</th>
@@ -65,7 +66,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for movie in Movie_country %}
+                {% for movie in Movie_table %}
                     <tr>
                         {% for value in movie %}
                             {% if value %}
