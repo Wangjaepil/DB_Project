@@ -28,8 +28,8 @@ def Advanced():
     Director = request.args.get("director")
     Country = request.args.get("country")
     Company = request.args.get("studio")
-    Opdate_start = request.args.get("date_start") 
-    Opdate_end = request.args.get("date_end")  
+    Opdate_start = request.args.get("date_start")
+    Opdate_end = request.args.get("date_end")
     db = sqlite3.connect('.//movie_Info.db')
     cursor = db.cursor()
     query = '''
