@@ -30,6 +30,7 @@ def Advanced():
     Company = request.args.get("studio")
     Opdate_start = request.args.get("date_start")
     Opdate_end = request.args.get("date_end")
+    genrelist = request.args.getlist("genre")
     WatchGrade = request.args.getlist("Grade")
     db = sqlite3.connect('.//movie_Info.db')
     cursor = db.cursor()
@@ -68,6 +69,9 @@ def Advanced():
     if Company:
         query += " AND 영화사=?"
         params.append(Company)
+    if genrelist:
+        query += " AND 장르 IN (" + ",".join(["?"] * len(genrelist)) + ")"
+        params.extend(genrelist)
     if gradeNm:
         query += " AND 관람등급 IN (" + ",".join(["?"] * len(gradeNm)) + ")"
         params.extend(gradeNm)
