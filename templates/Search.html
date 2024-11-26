@@ -60,6 +60,7 @@
             .highlight {
                 color: #4CAF50;
                 font-weight: bold;
+                font-size: 30px;
             }
         </style>
     </head>
@@ -71,7 +72,6 @@
         </header>
         <div class="content">
             <p><span class="highlight">영화 제목 : {{name}}</span></p>
-            <p>영화 정보 나열</p>
             <ul>
                 {% for att, movie in zip(Att_name, Info[0]) %}
                     {% if movie %}

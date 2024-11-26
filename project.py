@@ -30,6 +30,7 @@ def Advanced():
     Company = request.args.get("studio")
     Opdate_start = request.args.get("date_start")
     Opdate_end = request.args.get("date_end")
+    WatchGrade = request.args.getlist("Grade")
     db = sqlite3.connect('.//movie_Info.db')
     cursor = db.cursor()
     query = '''
@@ -37,6 +38,19 @@ def Advanced():
     FROM movie_Info
     WHERE 1=1
     '''
+
+    grade_mapping = {
+    "allG": ["전체관람가", "연소자관람가", "미성년자관람가","모든 관람객이 관람할 수 있는 등급"],
+    "tweG": ["12세이상관람가", "12세관람가", "12세 미만인 자는 관람할 수 없는 등급", "연소자관람불가", "중학생이상관람가"],
+    "fifG": ["15세관람가", "15세이상관람가", "고등학생이상관람가", "국민학생관람불가", "15세 미만인 자는 관람할 수 없는 등급"],
+    "aduG": ["청소년관람불가", "18세관람가", "미성년자관람불가", "18세 미만인 자는 관람할 수 없는 등급"],
+    "limG": ["제한상영가"]
+    }
+    gradeNm = []
+    for grade in WatchGrade:
+        if grade in grade_mapping:
+            gradeNm.extend(grade_mapping[grade])
+
     params = []
 
     if Opdate_start:
@@ -54,6 +68,9 @@ def Advanced():
     if Company:
         query += " AND 영화사=?"
         params.append(Company)
+    if gradeNm:
+        query += " AND 관람등급 IN (" + ",".join(["?"] * len(gradeNm)) + ")"
+        params.extend(gradeNm)
     Movie_table = cursor.execute(query, tuple(params)).fetchall()
     db.close()
     return render_template('Advanced_Search.html', Movie_table=Movie_table)
