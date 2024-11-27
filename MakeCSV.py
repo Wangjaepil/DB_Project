@@ -3,7 +3,7 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 
 # API 정보
-api_key = "749cea3b1d8320b9e085ae3402483fc8"  # API Key
+api_key = "749cea3b1d8320b9e085ae3402483fc8"  # API Key 근데 이거 깃허브에 올리면 안될거같은데
 url = "http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieList.xml"
 params = {
     "key": api_key,
