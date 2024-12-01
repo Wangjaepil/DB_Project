@@ -25,7 +25,6 @@ def SearchMovie():
 
 @app.route('/home/Advanced_Search/')
 def Advanced():
-    # 기존 코드
     Director = request.args.get("director")
     Country = request.args.get("country")
     Company = request.args.get("studio")
@@ -39,14 +38,15 @@ def Advanced():
 
     db = sqlite3.connect('.//movie_Info.db')
     cursor = db.cursor()
-    query = '''
-    SELECT 영화명, 장르, 개봉일자, 제작국가, 감독, 관람등급, 영화사
+
+    # 검색 조건 쿼리
+    base_query = '''
     FROM movie_Info
     WHERE 1=1
     '''
 
     grade_mapping = {
-        "allG": ["전체관람가", "연소자관람가", "미성년자관람가","모든 관람객이 관람할 수 있는 등급"],
+        "allG": ["전체관람가", "연소자관람가", "미성년자관람가", "모든 관람객이 관람할 수 있는 등급"],
         "tweG": ["12세이상관람가", "12세관람가", "12세 미만인 자는 관람할 수 없는 등급", "연소자관람불가", "중학생이상관람가"],
         "fifG": ["15세관람가", "15세이상관람가", "고등학생이상관람가", "국민학생관람불가", "15세 미만인 자는 관람할 수 없는 등급"],
         "aduG": ["청소년관람불가", "18세관람가", "미성년자관람불가", "18세 미만인 자는 관람할 수 없는 등급"],
@@ -60,48 +60,68 @@ def Advanced():
     params = []
 
     if Opdate_start:
-        query += " AND 개봉일자 >= ?"
+        base_query += " AND 개봉일자 >= ?"
         params.append(Opdate_start.replace("-", ""))
     if Opdate_end:
-        query += " AND 개봉일자 <= ?"
+        base_query += " AND 개봉일자 <= ?"
         params.append(Opdate_end.replace("-", ""))
     if Country:
-        query += " AND 제작국가=?"
+        base_query += " AND 제작국가=?"
         params.append(Country)
     if Director:
-        query += " AND 감독=?"
+        base_query += " AND 감독=?"
         params.append(Director)
     if Company:
-        query += " AND 영화사=?"
+        base_query += " AND 영화사=?"
         params.append(Company)
     if genrelist:
-        query += " AND 장르 IN (" + ",".join(["?"] * len(genrelist)) + ")"
+        base_query += " AND 장르 IN (" + ",".join(["?"] * len(genrelist)) + ")"
         params.extend(genrelist)
     if gradeNm:
-        query += " AND 관람등급 IN (" + ",".join(["?"] * len(gradeNm)) + ")"
+        base_query += " AND 관람등급 IN (" + ",".join(["?"] * len(gradeNm)) + ")"
         params.extend(gradeNm)
 
-    # 페이지네이션 추가
-    query += " LIMIT ? OFFSET ?"
-    params.extend([limit_value, offset_value])  # LIMIT, OFFSET 값 추가
+    # 전체 데이터 개수 계산
+    count_query = f"SELECT COUNT(*) {base_query}"
+    total_results = cursor.execute(count_query, tuple(params)).fetchone()[0]
+    total_pages = (total_results + limit_value - 1) // limit_value
 
+    # 페이지 데이터 조회
+    query = f'''
+    SELECT 영화명, 장르, 개봉일자, 제작국가, 감독, 관람등급, 영화사
+    {base_query}
+    LIMIT ? OFFSET ?
+    '''
+    params.extend([limit_value, offset_value])  # LIMIT, OFFSET 값 추가
     Movie_table = cursor.execute(query, tuple(params)).fetchall()
 
-    # 총 결과 개수 계산
-    count_query = '''
-    SELECT COUNT(*)
-    FROM movie_Info
-    WHERE 1=1
-    ''' + query[query.index(' AND'):]  # 조건을 재사용
-    total_results = cursor.execute(count_query, tuple(params[:-2])).fetchone()[0]
-    total_pages = (total_results + limit_value - 1) // limit_value  # 전체 페이지 수 계산
+    # 페이지네이션 처리 (5개 단위)
+    start_page = max(1, current_page - 2)  # 현재 페이지 기준 앞뒤로 2개씩 표시
+    end_page = min(total_pages, start_page + 4)  # 최대 5개까지 표시
+    page_range = range(start_page, end_page + 1)
 
     db.close()
 
-    return render_template('Advanced_Search.html', 
-                           Movie_table=Movie_table,
-                           current_page=current_page,
-                           total_pages=total_pages)
+# 검색 조건 유지용 딕셔너리
+    search_params = {
+        "director": Director,
+        "country": Country,
+        "studio": Company,
+        "date_start": Opdate_start,
+        "date_end": Opdate_end,
+        "genre": genrelist,
+        "Grade": WatchGrade,
+    }
+    return render_template(
+        'Advanced_Search.html',
+        Movie_table=Movie_table,
+        current_page=current_page,
+        total_pages=total_pages,
+        page_range=page_range,
+        search_params=search_params,  # 검색 조건 추가
+    )
+
+
 
 
 if __name__ == '__main__':
