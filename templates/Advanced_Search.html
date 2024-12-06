@@ -49,6 +49,28 @@
         .back-button:hover {
             background-color: #e5a975;
         }
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .pagination a, .pagination strong {
+            display: inline-block;
+            margin: 0 5px;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            border: 1px solid #9e540f;
+            color: #9e540f;
+        }
+        .pagination a:hover {
+            background-color: #9e540f;
+            color: white;
+        }
+        .pagination strong {
+            background-color: #9e540f;
+            color: white;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -81,7 +103,51 @@
             </tbody>
         </table>
 
-        <button class="back-button" onclick="window.history.back()">Go Back</button>
+        <!-- 페이지 네비게이션 -->
+        <div class="pagination">
+            <ul>
+                {% if current_page > 1 %}
+                    <li><a href="{{ url_for('Advanced', page=current_page - 1, **search_params) }}">이전</a></li>
+                {% endif %}
+                {% for page in page_range %}
+                    <li {% if page == current_page %}class="active"{% endif %}>
+                        <a href="{{ url_for('Advanced', page=page, **search_params) }}">{{ page }}</a>
+                    </li>
+                {% endfor %}
+                {% if current_page < total_pages %}
+                    <li><a href="{{ url_for('Advanced', page=current_page + 1, **search_params) }}">다음</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <style>
+            .pagination ul {
+                list-style: none;
+                display: flex;
+                justify-content: center;
+                padding: 0;
+            }
+            
+            .pagination li {
+                margin: 0 5px;
+            }
+            
+            .pagination a {
+                text-decoration: none;
+                color: #9e540f;
+                padding: 5px 10px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+            
+            .pagination .active a {
+                background-color: #9e540f;
+                color: white;
+            }
+            </style>
+        
+
+        <button class="back-button" onclick="location.href='/home'">Go Home</button>
     </div>
 </body>
 </html>
