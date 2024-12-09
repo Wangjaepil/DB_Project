@@ -31,7 +31,9 @@ while True:
     for companies in company:
         Company_Cd = {
             "CompanyCd": companies.findtext("companyCd"),  # 영화사 코드
-            "CompanyNm": companies.findtext("companyNm")   # 영화사 이름
+            "CompanyNm": companies.findtext("companyNm"),  # 영화사 이름
+            "companyPartNames": companies.findtext("companyPartNames"),  # 영화사 코드
+            "ceoNm": companies.findtext("ceoNm")   # 영화사 이름
         }
         Company.append(Company_Cd)
     
