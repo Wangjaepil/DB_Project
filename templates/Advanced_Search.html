@@ -35,7 +35,7 @@
             background-color: #9e540f;
             color: white;
         }
-        .back-button {
+        .back-button, .go-home-button {
             display: inline-block;
             padding: 10px 20px;
             background-color: #9e540f;
@@ -46,7 +46,7 @@
             text-align: center;
             margin-top: 20px;
         }
-        .back-button:hover {
+        .back-button:hover, .go-home-button:hover {
             background-color: #e5a975;
         }
         .pagination {
@@ -91,13 +91,13 @@
             <tbody>
                 {% for movie in Movie_table %}
                     <tr>
-                        {% for value in movie %}
-                            {% if value %}
-                                <td>{{ value }}</td>
-                            {% else %}
-                                <td> </td>
-                            {% endif %}
-                        {% endfor %}
+                        <td><a href="{{ url_for('SearchMovie', q=movie[0]) }}">{{ movie[0] }}</a></td>
+                        <td>{{ movie[1] }}</td>
+                        <td>{{ movie[2] }}</td>
+                        <td>{{ movie[3] }}</td>
+                        <td>{{ movie[4] }}</td>
+                        <td>{{ movie[5] }}</td>
+                        <td>{{ movie[6] }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -144,10 +144,10 @@
                 background-color: #9e540f;
                 color: white;
             }
-            </style>
-        
+        </style>
 
-        <button class="back-button" onclick="location.href='/home'">Go Home</button>
+        <button class="back-button" onclick="history.back()">뒤로 가기</button>
+        <button class="go-home-button" onclick="location.href='/home'">Go Home</button>
     </div>
 </body>
 </html>
