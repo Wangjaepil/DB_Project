@@ -1,89 +1,94 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>영화 정보</title>
-        <meta charset="utf-8">
-        <link rel="icon" href="{{ url_for('static', filename='MIcon.ico') }}" type="image/x-icon">
-        <style>
-            /* 전체 페이지 배경 및 기본 설정 */
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #f4f4f4;
-                margin: 0;
-                padding: 0;
-                color: #333;
-            }
 
-            /* 헤더 스타일 */
-            header {
-                background-color: #9e540f;
-                color: white;
-                text-align: center;
-                padding: 20px 0;
-                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-                position: relative;
-            }
+<head>
+    <title>영화 정보</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='MIcon.ico') }}" type="image/x-icon">
+    <style>
+        /* 전체 페이지 배경 및 기본 설정 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
 
-            /* 홈 버튼 스타일 */
-            .home-btn {
-                position: absolute;
-                left: 20px;
-                top: 50%;
-                transform: translateY(-50%);
-                background-color: white;
-                color: #9e540f;
-                border: 2px solid #9e540f;
-                padding: 10px 20px;
-                border-radius: 5px;
-                text-decoration: none;
-                font-weight: bold;
-                transition: background-color 0.3s, color 0.3s;
-            }
+        /* 헤더 스타일 */
+        header {
+            background-color: #9e540f;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
 
-            .home-btn:hover {
-                background-color: #b98554;
-                color: white;
-            }
+        /* 홈 버튼 스타일 */
+        .home-btn {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: white;
+            color: #9e540f;
+            border: 2px solid #9e540f;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
 
-            /* 메인 컨텐츠 정렬 */
-            .content {
-                max-width: 800px;
-                margin: 30px auto;
-                background: white;
-                border-radius: 10px;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-                padding: 20px;
-                text-align: center;
-            }
+        .home-btn:hover {
+            background-color: #b98554;
+            color: white;
+        }
 
-            /* 하이라이트 텍스트 */
-            .highlight {
-                color: #9e540f;
-                font-weight: bold;
-                font-size: 30px;
-            }
-        </style>
-    </head>
-    <body>
-        <header>
-            <!-- 홈 버튼 -->
-            <a href="/home" class="home-btn">홈</a>
-            <h1><img src="{{ url_for('static', filename='Icon.jpg') }}" alt="영화검색사이트" style ="width: 70px; height: auto;">영화 정보</h1>
-        </header>
-        <div class="content">
-            <p><span class="highlight">영화 제목 : {{ name }}</span></p>
-            {% if poster_url %}
-                <img src="{{ poster_url }}" alt="영화 포스터" style="max-width: 300px; height: auto; margin: 20px 0;">
-            {% else %}
-                <p>포스터 이미지를 찾을 수 없습니다.</p>
+        /* 메인 컨텐츠 정렬 */
+        .content {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* 하이라이트 텍스트 */
+        .highlight {
+            color: #9e540f;
+            font-weight: bold;
+            font-size: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <!-- 홈 버튼 -->
+        <a href="/home" class="home-btn">홈</a>
+        <h1><img src="{{ url_for('static', filename='Icon.jpg') }}" alt="영화검색사이트" style="width: 70px; height: auto;">영화
+            정보</h1>
+    </header>
+    <div class="content">
+        <p><span class="highlight">영화 제목 : {{ name }}</span></p>
+        {% if poster_url %}
+        <img src="{{ poster_url }}" alt="Movie Poster" width="200">
+        {% else %}
+        <p>No poster available.</p>
+        {% endif %}
+        <ul>
+            {% for att, movie in zip(Att_name, Info[0]) %}
+            {% if movie %}
+            <li>{{ att }} : {{ movie }}</li>
             {% endif %}
-            <ul>
-                {% for att, movie in zip(Att_name, Info[0]) %}
-                    {% if movie %}
-                        <li>{{ att }} : {{ movie }}</li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        </div>
-    </body>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+
 </html>
