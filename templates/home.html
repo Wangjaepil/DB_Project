@@ -1,194 +1,209 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>영화 검색 사이트</title>
-        <meta charset="utf-8">
-        <link rel="icon" href="{{ url_for('static', filename='MIcon.ico') }}" type="image/x-icon">
-        <style>
-            /* 기본 스타일 */
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #f9f9f9;
-                color: #333;
-                margin: 0;
-                padding: 0;
-            }
 
-            header {
-                background-color: #9e540f;
-                color: white;
-                text-align: center;
-                padding: 20px 0;
-                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-            }
+<head>
+    <title>영화 검색 사이트</title>
+    
+    <meta charset="utf-8">
+    <link rel="icon" href="{{ url_for('static', filename='MIcon.ico') }}" type="image/x-icon">
+    
+    <style>
+        /* 기본 스타일 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
 
-            h1 {
-                margin: 0;
-                font-size: 2rem;
-            }
+        header {
+            background-color: #9e540f;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        }
 
-            main {
-                max-width: 800px;
-                margin: 20px auto;
-                padding: 20px;
-                background: white;
-                border-radius: 8px;
-                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            }
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
 
-            label {
-                display: block;
-                font-weight: bold;
-                margin-bottom: 5px;
-            }
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
 
-            input[type="text"],
-            input[type="number"] {
-                width: 100%;
-                padding: 8px;
-                margin-bottom: 15px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                font-size: 1rem;
-            }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
 
-            input[type="submit"] {
-                background-color: #9e540f;
-                color: white;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 4px;
-                font-size: 1rem;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-            }
-
-            input[type="submit"]:hover {
-                background-color: #e5a975;
-            }
-
-            /* 장르 체크박스 스타일 */
-            .container {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 10px; /* 간격 추가 */
-                margin-bottom: 20px;
-            }
-
-            .container label {
-                flex: 0 0 calc(50% - 10px); /* 각 항목이 50% 너비를 차지 */
-                box-sizing: border-box;
-                background: #f0f0f0;
-                padding: 10px;
-                border-radius: 4px;
-                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-                cursor: pointer;
-                transition: background-color 0.3s ease, transform 0.2s ease;
-            }
-
-            .container input[type="checkbox"] {
-                margin-right: 10px;
-            }
-
-            .container label:hover {
-                background-color: #e5a975;
-                transform: translateY(-2px);
-            }
-
-            .date-inputs {
-            display: flex;
-            gap: 15px; /* 필드 간 간격 */
-            align-items: center; /* 라벨과 필드의 세로 정렬 */
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
             margin-bottom: 15px;
-            }
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
 
-            footer {
-                text-align: center;
-                padding: 20px;
-                margin-top: 20px;
-                background-color: #9e540f;
-                color: white;
-            }
-        </style>
-    </head>
-    <body>
-        <header>
-            <h1>
-                <img src="{{ url_for('static', filename='Icon.jpg') }}" alt="영화검색사이트" style ="width: 70px; height: auto;">
-                영화검색사이트
-            </h1>
-        </header>
-        <main>
-            <!-- 기본 검색 -->
-            <form action = "/home/Search/" method = "GET">
-                <p>
-                    <label for="textinput">영화 이름</label>
-                    <input type="text" id="textinput" name="q" placeholder="영화 이름을 입력하세요">
-                </p>
-                <input type="submit" value="검색">
-            </form>
-            <hr>
+        input[type="submit"] {
+            background-color: #9e540f;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-            <!-- 고급 검색 -->
-            <h2>고급 검색</h2>
-            <form action = "/home/Advanced_Search/" method = "GET">
-                <!-- 장르 선택 -->
-                <label>장르:</label>
-                <div class="container">
-                    <label><input type="checkbox" name="genre" value="드라마"> 드라마</label>
-                    <label><input type="checkbox" name="genre" value="코미디"> 코미디</label>
-                    <label><input type="checkbox" name="genre" value="액션"> 액션</label>
-                    <label><input type="checkbox" name="genre" value="멜로/로맨스"> 멜로/로맨스</label>
-                    <label><input type="checkbox" name="genre" value="스릴러"> 스릴러</label>
-                    <label><input type="checkbox" name="genre" value="미스터리"> 미스터리</label>
-                    <label><input type="checkbox" name="genre" value="공포(호러)"> 공포(호러)</label>
-                    <label><input type="checkbox" name="genre" value="어드벤처"> 어드벤처</label>
-                    <label><input type="checkbox" name="genre" value="범죄"> 범죄</label>
-                    <label><input type="checkbox" name="genre" value="가족"> 가족</label>
-                    <label><input type="checkbox" name="genre" value="판타지"> 판타지</label>
-                    <label><input type="checkbox" name="genre" value="SF"> SF</label>
-                    <label><input type="checkbox" name="genre" value="서부극(웨스턴)"> 서부극(웨스턴)</label>
-                    <label><input type="checkbox" name="genre" value="사극"> 사극</label>
-                    <label><input type="checkbox" name="genre" value="애니메이션"> 애니메이션</label>
-                    <label><input type="checkbox" name="genre" value="다큐멘터리"> 다큐멘터리</label>
-                    <label><input type="checkbox" name="genre" value="전쟁"> 전쟁</label>
-                    <label><input type="checkbox" name="genre" value="뮤지컬"> 뮤지컬</label>
-                    <label><input type="checkbox" name="genre" value="성인물(에로)"> 성인물(에로)</label>
-                    <label><input type="checkbox" name="genre" value="공연"> 공연</label>
-                    <label><input type="checkbox" name="genre" value="기타"> 기타</label>
-                </div>
+        input[type="submit"]:hover {
+            background-color: #e5a975;
+        }
 
-                <div class="date-inputs">
-                    <label for="date_start">개봉 일자:</label>
-                    <input type="date" id="date_start" name="date_start">
-                
-                    <label for="date_end">~</label>
-                    <input type="date" id="date_end" name="date_end">
-                </div>
+        /* 장르 체크박스 스타일 */
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            /* 간격 추가 */
+            margin-bottom: 20px;
+        }
 
-                <label for="country">제작 국가:</label>
-                <input type="text" id="country" name="country" placeholder="예: 한국">
+        .container label {
+            flex: 0 0 calc(50% - 10px);
+            /* 각 항목이 50% 너비를 차지 */
+            box-sizing: border-box;
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
 
-                <label for="director">감독:</label>
-                <input type="text" id="director" name="director" placeholder="감독 이름 입력">
-                
-                <label for="Grade">관람 등급:</label>
-                <div class="container">
+        .container input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .container label:hover {
+            background-color: #e5a975;
+            transform: translateY(-2px);
+        }
+
+        .date-inputs {
+            display: flex;
+            gap: 15px;
+            /* 필드 간 간격 */
+            align-items: center;
+            /* 라벨과 필드의 세로 정렬 */
+            margin-bottom: 15px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            background-color: #9e540f;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>
+            <img src="{{ url_for('static', filename='Icon.jpg') }}" alt="영화검색사이트" style="width: 70px; height: auto;">
+            영화검색사이트
+        </h1>
+        <h1>
+         <button onclick="location.href='/home/my_page'"
+         style="margin-top: 10px; padding: 10px 20px; background-color: #d37726; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s ease;">
+        마이페이지
+         </button>
+        </h1>
+    </header>
+    <main>
+        <!-- 기본 검색 -->
+        <form action="/home/Search/" method="GET">
+            <p>
+                <label for="textinput">영화 이름</label>
+                <input type="text" id="textinput" name="q" placeholder="영화 이름을 입력하세요">
+            </p>
+            <input type="submit" value="검색">
+        </form>
+        <hr>
+
+        <!-- 고급 검색 -->
+        <h2>고급 검색</h2>
+        <form action="/home/Advanced_Search/" method="GET">
+            <!-- 장르 선택 -->
+            <label>장르:</label>
+            <div class="container">
+                <label><input type="checkbox" name="genre" value="드라마"> 드라마</label>
+                <label><input type="checkbox" name="genre" value="코미디"> 코미디</label>
+                <label><input type="checkbox" name="genre" value="액션"> 액션</label>
+                <label><input type="checkbox" name="genre" value="멜로/로맨스"> 멜로/로맨스</label>
+                <label><input type="checkbox" name="genre" value="스릴러"> 스릴러</label>
+                <label><input type="checkbox" name="genre" value="미스터리"> 미스터리</label>
+                <label><input type="checkbox" name="genre" value="공포(호러)"> 공포(호러)</label>
+                <label><input type="checkbox" name="genre" value="어드벤처"> 어드벤처</label>
+                <label><input type="checkbox" name="genre" value="범죄"> 범죄</label>
+                <label><input type="checkbox" name="genre" value="가족"> 가족</label>
+                <label><input type="checkbox" name="genre" value="판타지"> 판타지</label>
+                <label><input type="checkbox" name="genre" value="SF"> SF</label>
+                <label><input type="checkbox" name="genre" value="서부극(웨스턴)"> 서부극(웨스턴)</label>
+                <label><input type="checkbox" name="genre" value="사극"> 사극</label>
+                <label><input type="checkbox" name="genre" value="애니메이션"> 애니메이션</label>
+                <label><input type="checkbox" name="genre" value="다큐멘터리"> 다큐멘터리</label>
+                <label><input type="checkbox" name="genre" value="전쟁"> 전쟁</label>
+                <label><input type="checkbox" name="genre" value="뮤지컬"> 뮤지컬</label>
+                <label><input type="checkbox" name="genre" value="성인물(에로)"> 성인물(에로)</label>
+                <label><input type="checkbox" name="genre" value="공연"> 공연</label>
+                <label><input type="checkbox" name="genre" value="기타"> 기타</label>
+            </div>
+
+            <div class="date-inputs">
+                <label for="date_start">개봉 일자:</label>
+                <input type="date" id="date_start" name="date_start">
+
+                <label for="date_end">~</label>
+                <input type="date" id="date_end" name="date_end">
+            </div>
+
+            <label for="country">제작 국가:</label>
+            <input type="text" id="country" name="country" placeholder="예: 한국">
+
+            <label for="director">감독:</label>
+            <input type="text" id="director" name="director" placeholder="감독 이름 입력">
+
+            <label for="Grade">관람 등급:</label>
+            <div class="container">
                 <label><input type="checkbox" name="Grade" value="allG">전체이용가</label>
                 <label><input type="checkbox" name="Grade" value="tweG">12세 이상 관람가</label>
                 <label><input type="checkbox" name="Grade" value="fifG">15세 이상 관람가</label>
                 <label><input type="checkbox" name="Grade" value="aduG">청소년 관람 불가</label>
                 <label><input type="checkbox" name="Grade" value="limG">제한상영가</label>
-                </div>
+            </div>
 
-                <label for="studio">제작사:</label>
-                <input type="text" id="studio" name="studio" placeholder="영화사 이름 입력">
+            <label for="studio">제작사:</label>
+            <input type="text" id="studio" name="studio" placeholder="영화사 이름 입력">
 
-                <input type="submit" value="고급 검색">
-            </form>
-        </main>
-        <footer>
-            Made by 김석진, 이재필
-        </footer>
-    </body>
+            <input type="submit" value="고급 검색">
+        </form>
+    </main>
+    <footer>
+        Made by 김석진, 이재필
+    </footer>
+</body>
+
 </html>

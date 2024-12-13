@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>마이 페이지</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='MIcon.ico') }}" type="image/x-icon">
+    <style>
+        /* 전체 페이지 배경 및 기본 설정 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* 헤더 스타일 */
+        header {
+            background-color: #9e540f;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        /* 홈 버튼 스타일 */
+        .home-btn {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            background-color: white;
+            color: #9e540f;
+            border: 2px solid #9e540f;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .home-btn:hover {
+            background-color: #b98554;
+            color: white;
+        }
+
+        /* 영화 리스트 컨테이너 */
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+
+        /* 영화 항목 스타일 */
+        .movie-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .movie-name a {
+            text-decoration: none;
+            color: #9e540f;
+            font-weight: bold;
+        }
+
+        /* 삭제 버튼 스타일 */
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* 제목 스타일 */
+        h2 {
+            text-align: center;
+            color: #9e540f;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <!-- 홈 버튼 -->
+        <a href="/home" class="home-btn">홈</a>
+        <h1><img src="{{ url_for('static', filename='Icon.jpg') }}" alt="영화검색사이트" style="width: 70px; height: auto;">영화
+            정보</h1>
+    </header>
+    <div class="container">
+        <h2>내가 저장한 영화</h2>
+        <ul id="movie-list">
+            <!-- 영화 목록이 여기에 동적으로 표시됩니다 -->
+        </ul>
+    </div>
+
+    <script>
+        // 페이지가 로드될 때 로컬 스토리지에서 영화 목록 불러오기
+        window.onload = function() {
+            const scrapMovies = JSON.parse(localStorage.getItem('scrapMovies')) || [];
+            const movieListContainer = document.getElementById('movie-list');
+            
+            // 만약 영화가 없으면 알림
+            if (scrapMovies.length === 0) {
+                movieListContainer.innerHTML = '<li>스크랩한 영화가 없습니다.</li>';
+            } else {
+                scrapMovies.forEach((movie, index) => {
+                    const movieItem = document.createElement('li');
+                    movieItem.className = 'movie-item';
+
+                    // 영화 링크 수정: 클릭하면 검색 결과 페이지로 이동
+                    movieItem.innerHTML = `
+                        <span class="movie-name">
+                            <a href="/home/Search/?q=${encodeURIComponent(movie.title)}">${movie.title}</a>
+                        </span>
+                        <button class="delete-btn" onclick="deleteMovie(${index})">삭제</button>
+                    `;
+                    movieListContainer.appendChild(movieItem);
+                });
+            }
+        };
+
+        // 영화 삭제 기능
+        function deleteMovie(index) {
+            // 로컬 스토리지에서 저장된 영화 목록 불러오기
+            let scrapMovies = JSON.parse(localStorage.getItem('scrapMovies')) || [];
+
+            // 선택된 영화 삭제
+            scrapMovies.splice(index, 1);
+
+            // 로컬 스토리지에 업데이트된 목록 저장
+            localStorage.setItem('scrapMovies', JSON.stringify(scrapMovies));
+
+            // 페이지 다시 로드
+            window.location.reload();
+        }
+    </script>
+</body>
+
+</html>

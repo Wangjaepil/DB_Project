@@ -9,6 +9,16 @@ app = Flask(__name__)
 def home():
     return render_template('home.html')
 
+# 임시 데이터베이스 대체 (실제 DB 사용 시 수정)
+user_movies = [
+    {"id": 1, "name": "영화1", "movie_id": 101},
+    {"id": 2, "name": "영화2", "movie_id": 102},
+]
+
+@app.route('/home/my_page')
+def my_page():
+    return render_template('my_page.html', movies=user_movies)
+
 def get_poster_from_kmdb(movie_name):
     # KMDb API 엔드포인트 및 API 키
     api_url = "http://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp"
