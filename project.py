@@ -68,7 +68,7 @@ def SearchMovie():
     Info = cursor.execute(
     'SELECT 영화명, "영화명(영어)", 제작연도, 상영시간, 개봉일자, 제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사, "영화사 분류", "영화사 대표" '
     'FROM movie_Info '
-    'JOIN CompanyCd ON movie_Info.영화사 = CompanyCd.CompanyNm '
+    'LEFT JOIN CompanyCd ON movie_Info.영화사 = CompanyCd.CompanyNm '
     'WHERE 영화명 = ? OR "영화명(영어)" = ?', 
     (movie_name, movie_name)).fetchall()
 
