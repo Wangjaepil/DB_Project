@@ -53,6 +53,10 @@ def get_poster_from_kmdb(movie_name):
         print(f"Error fetching data from KMDb API: {e}")
         return None
 
+@app.route('/home/CRUD/')
+def CRUD():
+    return render_template('CRUD.html')
+
 @app.route('/home/Search/', methods=['GET'])
 def SearchMovie():
     movie_name = request.args.get("q")  # HTML 폼에서 전달된 'q' 값, 즉 이름 입력한 거를 가져옴

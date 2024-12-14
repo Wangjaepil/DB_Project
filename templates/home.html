@@ -29,6 +29,23 @@
             margin: 0;
             font-size: 2rem;
         }
+    
+        .crud-button {
+            position: absolute;
+            top: 50px;
+            right: 30px;
+            background-color: white;
+            color: #9e540f;
+            border: 1px solid #9e540f;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }  
+
+        .crud-button:hover {
+            background-color: #f3f3f3;
+        }
 
         main {
             max-width: 800px;
@@ -131,6 +148,12 @@
         마이페이지
          </button>
         </h1>
+        <h1>
+            <button class="crud-button" onclick="location.href='/home/CRUD/'">
+                CRUD 페이지
+            </button>
+        </h1>
+        
     </header>
     <main>
         <!-- 기본 검색 -->

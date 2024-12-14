@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>삽입, 삭제, 수정</title>
+    <link rel="icon" href="{{ url_for('static', filename='MIcon.ico') }}" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #9e540f;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 50px;
+            right: 30px;
+            background-color: white;
+            color: #9e540f;
+            border: 1px solid #9e540f;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .home-btn:hover {
+            background-color: #f3f3f3;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .action-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #9e540f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background-color: #e5a975;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="number"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            padding: 10px 15px;
+            background-color: #9e540f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #e5a975;
+        }
+
+        .delete-btn {
+            color: red;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>
+        <img src="{{ url_for('static', filename='Icon.jpg') }}" alt="영화검색사이트" style="width: 70px; height: auto;">
+        영화 정보 관리
+        <button class="home-btn" onclick="window.location.href='/home/'">홈</button>
+        </h1>
+    </header>
+
+    <div class="container">
+        <h2>영화 정보 관리</h2>
+
+        <!-- 삽입, 수정, 삭제 버튼 -->
+        <button class="action-btn" onclick="showForm('insert')">영화 삽입</button>
+        <button class="action-btn" onclick="showForm('update')">영화 수정</button>
+        <button class="action-btn" onclick="showForm('delete')">영화 삭제</button>
+
+        <!-- 삽입 폼 -->
+        <div id="insert-form" style="display:none;">
+            <h3>영화 삽입</h3>
+            <form action="/insert" method="POST">
+                <label for="movie_name">영화 제목:</label>
+                <input type="text" id="movie_name" name="movie_name" required>
+                <label for="movie_year">제작 연도:</label>
+                <input type="number" id="movie_year" name="movie_year" required>
+                <label for="movie_director">감독:</label>
+                <input type="text" id="movie_director" name="movie_director">
+                <label for="movie_genre">장르:</label>
+                <input type="text" id="movie_genre" name="movie_genre">
+                <input type="submit" value="삽입">
+            </form>
+        </div>
+
+        <!-- 수정 폼 -->
+        <div id="update-form" style="display:none;">
+            <h3>영화 수정</h3>
+            <form action="/update" method="POST">
+                <label for="movie_id">영화 ID:</label>
+                <input type="number" id="movie_id" name="movie_id" required>
+                <label for="new_movie_name">새 영화 제목:</label>
+                <input type="text" id="new_movie_name" name="new_movie_name">
+                <label for="new_movie_year">새 제작 연도:</label>
+                <input type="number" id="new_movie_year" name="new_movie_year">
+                <label for="new_movie_director">새 감독:</label>
+                <input type="text" id="new_movie_director" name="new_movie_director">
+                <label for="new_movie_genre">새 장르:</label>
+                <input type="text" id="new_movie_genre" name="new_movie_genre">
+                <input type="submit" value="수정">
+            </form>
+        </div>
+
+        <!-- 삭제 폼 -->
+        <div id="delete-form" style="display:none;">
+            <h3>영화 삭제</h3>
+            <form action="/delete" method="POST">
+                <label for="delete_movie_id">삭제할 영화 ID:</label>
+                <input type="number" id="delete_movie_id" name="delete_movie_id" required>
+                <input type="submit" value="삭제">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showForm(action) {
+            // 모든 폼을 숨깁니다
+            document.getElementById('insert-form').style.display = 'none';
+            document.getElementById('update-form').style.display = 'none';
+            document.getElementById('delete-form').style.display = 'none';
+
+            // 클릭된 버튼에 맞는 폼만 표시합니다
+            if (action === 'insert') {
+                document.getElementById('insert-form').style.display = 'block';
+            } else if (action === 'update') {
+                document.getElementById('update-form').style.display = 'block';
+            } else if (action === 'delete') {
+                document.getElementById('delete-form').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
