@@ -98,10 +98,6 @@
             background-color: #e5a975;
         }
 
-        .release-date {
-            margin-bottom: 20px;
-        }
-
         .delete-btn {
             color: red;
             cursor: pointer;
@@ -133,6 +129,13 @@
     <div class="container">
         <h2>영화 정보 관리</h2>
 
+        <!-- success_message 출력 부분 -->
+        <div>
+            {% if success_message %}
+                <p class="success-message">{{ success_message }}</p>
+            {% endif %}
+        </div>
+        
         <!-- 삽입, 수정, 삭제 버튼 -->
         <button class="action-btn" onclick="showForm('insert')">영화 삽입</button>
         <button class="action-btn" onclick="showForm('update')">영화 수정</button>
@@ -144,39 +147,37 @@
             <div class="mandatory-info">
                 <p><span class="required">*</span>은 필수 입력 항목입니다.</p>
             </div>
-            <form action="/insert" method="POST">
-                <label for="movie_id">영화 ID: <span class="required">*</span></label>
-                <input type="number" id="movie_id" name="movie_id" required>
-                <label for="movie_name">영화 제목: <span class="required">*</span></label>
-                <input type="text" id="movie_name" name="movie_name" required>
-                <label for="movie_en_name">영화명(영어):</label>
-                <input type="text" id="movie_en_name" name="movie_en_name">
-                <label for="movie_year">제작 연도: </label>
-                <input type="number" id="movie_year" name="movie_year" required>
-                <label for="movie_runtime">상영 시간: </label>
-                <input type="number" id="movie_runtime" name="movie_runtime" required>
-                <div class="release-date">
-                    <label for="new_release_date">새 개봉 일자:</label>
-                    <input type="date" id="new_release_date" name="new_release_date">
-                </div>
-                <label for="movie_status">제작 상태:</label>
-                <input type="text" id="movie_status" name="movie_status">
-                <label for="movie_type">영화 유형:</label>
-                <input type="text" id="movie_type" name="movie_type">
-                <label for="movie_country">제작 국가:</label>
-                <input type="text" id="movie_country" name="movie_country">
-                <label for="movie_genre">장르:</label>
-                <input type="text" id="movie_genre" name="movie_genre">
-                <label for="movie_director">감독:</label>
-                <input type="text" id="movie_director" name="movie_director">
-                <label for="movie_lead_actor">주연 배우:</label>
-                <input type="text" id="movie_lead_actor" name="movie_lead_actor">
-                <label for="movie_format">상영 형태:</label>
-                <input type="text" id="movie_format" name="movie_format">
-                <label for="movie_rating">관람 등급:</label>
-                <input type="text" id="movie_rating" name="movie_rating">
-                <label for="movie_studio">영화사:</label>
-                <input type="text" id="movie_studio" name="movie_studio">
+            <form action="/home/CRUD/" method="POST">
+                <label for="movieCd">영화 ID: <span class="required">*</span></label>
+                <input type="text" id="movieCd" name="movieCd" required>
+                <label for="영화명">영화 제목: <span class="required">*</span></label>
+                <input type="text" id="영화명" name="영화명" required>
+                <label for="영화명(영어)">영화명(영어):</label>
+                <input type="text" id="영화명(영어)" name="영화명(영어)">
+                <label for="제작연도">제작 연도: </label>
+                <input type="number" id="제작연도" name="제작연도">
+                <label for="상영시간">상영 시간(분): </label>
+                <input type="number" id="상영시간" name="상영시간">
+                <label for="개봉일자">개봉 일자:</label>
+                <input type="date" id="개봉일자" name="개봉일자">
+                <label for="제작상태">제작 상태:</label>
+                <input type="text" id="제작상태" name="제작상태">
+                <label for="영화유형">영화 유형:</label>
+                <input type="text" id="영화유형" name="영화유형">
+                <label for="제작국가">제작 국가:</label>
+                <input type="text" id="제작국가" name="제작국가">
+                <label for="장르">장르:</label>
+                <input type="text" id="장르" name="장르">
+                <label for="감독">감독:</label>
+                <input type="text" id="감독" name="감독">
+                <label for="주연배우">주연 배우:</label>
+                <input type="text" id="주연배우" name="주연배우">
+                <label for="상영형태">상영 형태:</label>
+                <input type="text" id="상영형태" name="상영형태">
+                <label for="관람등급">관람 등급:</label>
+                <input type="text" id="관람등급" name="관람등급">
+                <label for="영화사">영화사:</label>
+                <input type="text" id="영화사" name="영화사">
                 <input type="submit" value="삽입">
             </form>
         </div>
