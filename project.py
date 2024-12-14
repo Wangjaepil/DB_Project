@@ -39,16 +39,22 @@ def get_poster_from_kmdb(movie_name):
 
         # 포스터 URL 추출 (첫 번째 포스터만 선택)
         if "Data" in data and data["Data"]:
-            movie_data = data["Data"][0]["Result"][0]
-            posters = movie_data.get("posters", None)
-            if posters:
-                # 첫 번째 포스터 URL만 반환
-                poster_url = posters.split('|')[0]  
-                return poster_url
+            movie_data = data["Data"][0]
+            
+            # 'Result' 키가 있는지 확인하고, 없으면 빈 리스트로 처리
+            # 이 과정을 왜 하냐면 KMDB에 없는 영화일 수 있거든.
+            result_data = movie_data.get("Result", [])
+            if result_data:
+                posters = result_data[0].get("posters", None)
+                if posters:
+                    poster_url = posters.split('|')[0]  # 첫 번째 포스터 URL만 사용
+                    return poster_url
             else:
-                return None  # 포스터가 없을 경우
+                print("No 'Result' data found.")
         else:
-            return None  # 결과가 없을 경우
+            print("No 'Data' or 'Data' is empty.")
+        return None  # 결과가 없을 경우
+
     except requests.exceptions.RequestException as e:
         print(f"Error fetching data from KMDb API: {e}")
         return None
