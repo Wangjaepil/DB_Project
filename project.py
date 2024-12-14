@@ -62,54 +62,85 @@ def get_poster_from_kmdb(movie_name):
 @app.route('/home/CRUD/', methods=['GET', 'POST'])
 def insert_movie():
     if request.method == 'POST':
-        # 폼에서 전달된 데이터 가져오기
-        movieCd = request.form['movieCd']
-        영화명 = request.form['영화명']
-        영화명_영어 = request.form['영화명(영어)']
-        제작연도 = request.form['제작연도']
-        상영시간 = request.form['상영시간']
-        개봉일자 = request.form['개봉일자']
-        제작상태 = request.form['제작상태']
-        영화유형 = request.form['영화유형']
-        제작국가 = request.form['제작국가']
-        장르 = request.form['장르']
-        감독 = request.form['감독']
-        주연배우 = request.form['주연배우']
-        상영형태 = request.form['상영형태']
-        관람등급 = request.form['관람등급']
-        영화사 = request.form['영화사']
+        action = request.form.get('action')
 
-        # 데이터베이스에 연결
-        conn = sqlite3.connect('Movie_Info.db')
-        cursor = conn.cursor()
+        # 삽입 요청 처리
+        if action == 'insert':
+            movieCd = request.form['movieCd']
+            영화명 = request.form['영화명']
+            영화명_영어 = request.form['영화명(영어)']
+            제작연도 = request.form['제작연도']
+            상영시간 = request.form['상영시간']
+            개봉일자 = request.form['개봉일자']
+            제작상태 = request.form['제작상태']
+            영화유형 = request.form['영화유형']
+            제작국가 = request.form['제작국가']
+            장르 = request.form['장르']
+            감독 = request.form['감독']
+            주연배우 = request.form['주연배우']
+            상영형태 = request.form['상영형태']
+            관람등급 = request.form['관람등급']
+            영화사 = request.form['영화사']
 
-        try:
-            # 삽입 쿼리 실행
-            cursor.execute("""
-                INSERT INTO movie_Info (
-                    movieCd, 영화명, "영화명(영어)", 제작연도, 상영시간, 개봉일자,
+            # 데이터베이스에 연결
+            conn = sqlite3.connect('Movie_Info.db')
+            cursor = conn.cursor()
+
+            try:
+                # 삽입 쿼리 실행
+                cursor.execute("""
+                    INSERT INTO movie_Info (
+                        movieCd, 영화명, "영화명(영어)", 제작연도, 상영시간, 개봉일자,
+                        제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    movieCd, 영화명, 영화명_영어, 제작연도, 상영시간, 개봉일자,
                     제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                movieCd, 영화명, 영화명_영어, 제작연도, 상영시간, 개봉일자,
-                제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사
-            ))
+                ))
 
-            # 커밋하여 데이터베이스에 반영
-            conn.commit()
-            success_message = "영화 정보가 성공적으로 삽입되었습니다."
-        except sqlite3.IntegrityError:
-            # movieCd가 Primary Key라서 중복이 발생할 경우 에러 메시지 처리
-            success_message = "영화 ID가 중복되었습니다. 다른 ID를 사용해 주세요."
-        finally:
-            # 연결 종료
-            conn.close()
+                # 커밋하여 데이터베이스에 반영
+                conn.commit()
+                success_message = "영화 정보가 성공적으로 삽입되었습니다."
+            except sqlite3.IntegrityError:
+                # movieCd가 Primary Key라서 중복이 발생할 경우 에러 메시지 처리
+                success_message = "영화 ID가 중복되었습니다. 다른 ID를 사용해 주세요."
+            finally:
+                # 연결 종료
+                conn.close()
 
-        # 삽입 후 성공 메시지를 같은 페이지에 표시
-        return render_template('CRUD.html', success_message=success_message)
+            # 삽입 후 성공 메시지를 같은 페이지에 표시
+            return render_template('CRUD.html', success_message=success_message)
+
+        # 삭제 요청 처리
+        elif action == 'delete':
+            movieCd = request.form['movieCd']
+            conn = sqlite3.connect('Movie_Info.db')
+            cursor = conn.cursor()
+
+            try:
+                # movieCd가 존재하는지 확인
+                cursor.execute("SELECT * FROM movie_Info WHERE movieCd = ?", (movieCd,))
+                movie = cursor.fetchone()
+
+                if movie:
+                    # movieCd를 기준으로 영화 삭제
+                    cursor.execute("DELETE FROM movie_Info WHERE movieCd = ?", (movieCd,))
+                    conn.commit()
+
+                    success_message = "영화가 성공적으로 삭제되었습니다."
+                else:
+                    success_message = f"영화 Code '{movieCd}'는 존재하지 않습니다다."
+            except sqlite3.Error as e:
+                success_message = f"영화를 삭제하는데 문제가 발생했습니다: {e}"
+            finally:
+                conn.close()
+
+            # 삭제 후 페이지에 메시지 전달
+            return render_template('CRUD.html', success_message=success_message)
 
     # GET 요청 시 빈 폼을 반환
     return render_template('CRUD.html', success_message=None)
+
 
 @app.route('/home/Search/', methods=['GET'])
 def SearchMovie():

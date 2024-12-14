@@ -148,7 +148,7 @@
                 <p><span class="required">*</span>은 필수 입력 항목입니다.</p>
             </div>
             <form action="/home/CRUD/" method="POST">
-                <label for="movieCd">영화 ID: <span class="required">*</span></label>
+                <label for="movieCd">영화 Code: <span class="required">*</span></label>
                 <input type="text" id="movieCd" name="movieCd" required>
                 <label for="영화명">영화 제목: <span class="required">*</span></label>
                 <input type="text" id="영화명" name="영화명" required>
@@ -178,6 +178,7 @@
                 <input type="text" id="관람등급" name="관람등급">
                 <label for="영화사">영화사:</label>
                 <input type="text" id="영화사" name="영화사">
+                <input type="hidden" name="action" value="insert">
                 <input type="submit" value="삽입">
             </form>
         </div>
@@ -189,7 +190,7 @@
                 <p><span class="required">*</span>은 필수 입력 항목입니다.</p>
             </div>
             <form action="/update" method="POST">
-                <label for="movie_id">영화 ID: <span class="required">*</span></label>
+                <label for="movie_id">영화 Code: <span class="required">*</span></label>
                 <input type="number" id="movie_id" name="movie_id" required>
                 <label for="new_movie_name">새 영화 제목:</label>
                 <input type="text" id="new_movie_name" name="new_movie_name">
@@ -231,9 +232,10 @@
             <div class="mandatory-info">
                 <p><span class="required">*</span>은 필수 입력 항목입니다.</p>
             </div>
-            <form action="/delete" method="POST">
-                <label for="delete_movie_id">삭제할 영화 ID: <span class="required">*</span></label>
-                <input type="number" id="delete_movie_id" name="delete_movie_id" required>
+            <form action="/home/CRUD/" method="POST">
+                <label for="movieCd">삭제할 영화 Code: <span class="required">*</span></label>
+                <input type="text" id="movieCd" name="movieCd" required>
+                <input type="hidden" name="action" value="delete">
                 <input type="submit" value="삭제">
             </form>
         </div>
