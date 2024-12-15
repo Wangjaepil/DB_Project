@@ -138,6 +138,64 @@ def insert_movie():
             # 삭제 후 페이지에 메시지 전달
             return render_template('CRUD.html', success_message=success_message)
 
+        elif action == 'edit':
+            searchMovieCd = request.form.get('searchMovieCd')
+            conn = sqlite3.connect('Movie_Info.db')
+            cursor = conn.cursor()
+                
+            try:
+                cursor.execute("SELECT * FROM movie_Info WHERE movieCd = ?", (searchMovieCd,))
+                row = cursor.fetchone()
+
+                if row:
+                    # 검색 결과 매핑
+                    movie_data = {
+                        'movieCd': row[0], '영화명': row[1], '영화명(영어)': row[2],
+                        '제작연도': row[3], '상영시간': row[4], '개봉일자': row[5],
+                        '제작상태': row[6], '영화유형': row[7], '제작국가': row[8],
+                        '장르': row[9], '감독': row[10], '주연배우': row[11],
+                        '상영형태': row[12], '관람등급': row[13], '영화사': row[14]
+                    }
+                    return render_template('CRUD.html', update_stage="edit", movie_data=movie_data)
+                else:
+                    error_message = "해당 MovieCd가 데이터베이스에 없습니다."
+                    return render_template('CRUD.html', error_message=error_message, update_stage=None)
+            except sqlite3.Error as e:
+                error_message = f"데이터베이스 오류 발생: {e}"
+                return render_template('CRUD.html', error_message=error_message, update_stage=None)
+            finally:
+                conn.close()
+
+        # 수정 제출 요청
+        elif action == 'update_submit':
+            movieCd = request.form.get('movieCd')
+            updated_data = (
+                request.form.get('영화명'), request.form.get('영화명(영어)'),
+                request.form.get('제작연도'), request.form.get('상영시간'),
+                request.form.get('개봉일자'), request.form.get('제작상태'),
+                request.form.get('영화유형'), request.form.get('제작국가'),
+                request.form.get('장르'), request.form.get('감독'),
+                request.form.get('주연배우'), request.form.get('상영형태'),
+                request.form.get('관람등급'), request.form.get('영화사'), movieCd
+            )
+
+            conn = sqlite3.connect('Movie_Info.db')
+            cursor = conn.cursor()
+            try:
+                cursor.execute("""
+                    UPDATE movie_Info
+                    SET 영화명 = ?, "영화명(영어)" = ?, 제작연도 = ?, 상영시간 = ?, 개봉일자 = ?, 제작상태 = ?,
+                        영화유형 = ?, 제작국가 = ?, 장르 = ?, 감독 = ?, 주연배우 = ?, 상영형태 = ?, 관람등급 = ?, 영화사 = ?
+                    WHERE movieCd = ?
+                """, updated_data)
+                conn.commit()
+                success_message = "영화 정보가 성공적으로 수정되었습니다."
+            except sqlite3.Error as e:
+                success_message = f"수정 중 오류 발생: {e}"
+            finally:
+                conn.close()
+
+            return render_template('CRUD.html', success_message=success_message)
     # GET 요청 시 빈 폼을 반환
     return render_template('CRUD.html', success_message=None)
 
@@ -271,12 +329,3 @@ def Advanced():
 if __name__ == '__main__':
     app.debug = True
     app.run(host='127.0.0.1', port=5000)
-
-
-# if __name__ == '__main__':
-#     movie_name = "범죄도시2"
-#     poster_url = get_poster_from_kmdb(movie_name)
-#     if poster_url:
-#         print(f"영화: {movie_name}\n포스터 URL: {poster_url}")
-#     else:
-#         print(f"영화: {movie_name}\n포스터 URL을 찾을 수 없습니다.")
