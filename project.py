@@ -283,7 +283,7 @@ def CRUD_company():
                     return render_template('CRUD_company.html', update_stage="edit", company_data=company_data)
                 else:
                     success_message = "해당 CompanyCd가 데이터베이스에 없습니다."
-                    return render_template('CRUD.html', success_message=success_message, update_stage=None)
+                    return render_template('CRUD_company.html', success_message=success_message, update_stage=None)
             except sqlite3.Error as e:
                 success_message = f"데이터베이스 오류 발생: {e}"
                 return render_template('CRUD_company.html', success_message=success_message, update_stage=None)
