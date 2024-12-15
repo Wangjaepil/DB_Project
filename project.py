@@ -294,6 +294,7 @@ def Advanced():
     query = f'''
     SELECT 영화명, 장르, 개봉일자, 제작국가, 감독, 관람등급, 영화사
     {base_query}
+    ORDER BY 개봉일자 DESC  -- 개봉일자를 기준으로 내림차순 정렬
     LIMIT ? OFFSET ?
     '''
     params.extend([limit_value, offset_value])  # LIMIT, OFFSET 값 추가
@@ -306,7 +307,7 @@ def Advanced():
 
     db.close()
 
-# 검색 조건 유지용 딕셔너리
+    # 검색 조건 유지용 딕셔너리
     search_params = {
         "director": Director,
         "country": Country,
@@ -324,6 +325,7 @@ def Advanced():
         page_range=page_range,
         search_params=search_params,  # 검색 조건 추가
     )
+
 
 
 if __name__ == '__main__':

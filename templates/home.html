@@ -218,6 +218,13 @@
 
         <!-- 고급 검색 -->
         <h2>고급 검색</h2>
+        <style>
+            .warning {
+              color: red;
+              display: none; /* 초기에는 숨김 */
+              margin-top: 10px;
+            }
+          </style>
         <form action="/home/Advanced_Search/" method="GET">
             <!-- 장르 선택 -->
             <label>장르:</label>
@@ -244,6 +251,7 @@
                 <label><input type="checkbox" name="genre" value="공연"> 공연</label>
                 <label><input type="checkbox" name="genre" value="기타"> 기타</label>
             </div>
+            <p id="warning" class="warning">하나의 장르만 선택해주세요.</p>
 
             <div class="date-inputs">
                 <label for="date_start">개봉 일자:</label>
@@ -273,6 +281,29 @@
 
             <input type="submit" value="고급 검색">
         </form>
+        <script>
+            // 체크박스 제한 로직
+            const genreCheckboxes = document.querySelectorAll('input[name="genre"]');
+            const warning = document.getElementById("warning");
+        
+            genreCheckboxes.forEach(checkbox => {
+              checkbox.addEventListener('change', () => {
+                // 체크된 체크박스 찾기
+                const checkedBoxes = Array.from(genreCheckboxes).filter(box => box.checked);
+        
+                if (checkedBoxes.length > 1) {
+                  // 경고문 표시
+                  warning.style.display = 'block';
+        
+                  // 마지막 선택된 체크박스 해제
+                  checkbox.checked = false;
+                } else {
+                  // 경고문 숨기기
+                  warning.style.display = 'none';
+                }
+              });
+            });
+          </script>
     </main>
     <script>
         // 모달 열기
