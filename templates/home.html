@@ -218,8 +218,7 @@
 
         <!-- 고급 검색 -->
         <h2>고급 검색</h2>
-        <form action="/home/Advanced_Search/" method="GET"
-            onsubmit="return validategenreAdvancedSearch() && validateGradeAdvancedSearch()">
+        <form action="/home/Advanced_Search/" method="GET">
             <!-- 장르 선택 -->
             <label>장르:</label>
             <div class="container">
@@ -281,42 +280,6 @@
             <input type="submit" value="고급 검색">
         </form>
     </main>
-
-    <script>
-        // 장르 검증 함수
-        function validategenreAdvancedSearch() {
-            var genreCheckboxes = document.querySelectorAll('input[name="genre"]:checked');
-            if (genreCheckboxes.length > 1) {
-                var genreWarning = document.getElementById('genre-warning');
-                genreWarning.innerText = "장르를 하나만 선택해주세요";
-                genreWarning.style.color = "red";
-                genreWarning.style.fontSize = "30px";
-                genreWarning.style.fontWeight = "bold";
-                return false; // 폼 제출 막음
-            } else {
-                document.getElementById('genre-warning').innerText = "";
-            }
-            return true; // 검증 성공
-        }
-
-        // 관람 등급 검증 함수
-        function validateGradeAdvancedSearch() {
-            var gradeCheckboxes = document.querySelectorAll('input[name="Grade"]:checked');
-            if (gradeCheckboxes.length > 1) {
-                var gradeWarning = document.getElementById('grade-warning');
-                gradeWarning.innerText = "관람 등급을 하나만 선택해주세요";
-                gradeWarning.style.color = "red";
-                gradeWarning.style.fontSize = "30px";
-                gradeWarning.style.fontWeight = "bold";
-                return false; // 폼 제출 막음
-            } else {
-                document.getElementById('grade-warning').innerText = "";
-            }
-            return true; // 검증 성공
-        }
-
-    </script>
-
 
     <script>
         // 모달 열기
