@@ -103,7 +103,7 @@ def insert_movie():
                 success_message = "영화 정보가 성공적으로 삽입되었습니다."
             except sqlite3.IntegrityError:
                 # movieCd가 Primary Key라서 중복이 발생할 경우 에러 메시지 처리
-                success_message = "영화 ID가 중복되었습니다. 다른 ID를 사용해 주세요."
+                success_message = "영화 Code가 중복되었습니다. 다른 Code를 사용해 주세요."
             finally:
                 # 연결 종료
                 conn.close()
@@ -158,11 +158,11 @@ def insert_movie():
                     }
                     return render_template('CRUD.html', update_stage="edit", movie_data=movie_data)
                 else:
-                    error_message = "해당 MovieCd가 데이터베이스에 없습니다."
-                    return render_template('CRUD.html', error_message=error_message, update_stage=None)
+                    success_message = "해당 MovieCd가 데이터베이스에 없습니다."
+                    return render_template('CRUD.html', success_message=success_message, update_stage=None)
             except sqlite3.Error as e:
-                error_message = f"데이터베이스 오류 발생: {e}"
-                return render_template('CRUD.html', error_message=error_message, update_stage=None)
+                success_message = f"데이터베이스 오류 발생: {e}"
+                return render_template('CRUD.html', success_message=success_message, update_stage=None)
             finally:
                 conn.close()
 
@@ -199,6 +199,123 @@ def insert_movie():
     # GET 요청 시 빈 폼을 반환
     return render_template('CRUD.html', success_message=None)
 
+@app.route('/home/CRUD_Cp/', methods=['GET', 'POST'])
+def CRUD_company():
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        # 삽입 요청 처리
+        if action == 'insert':
+            CompanyCd = request.form['CompanyCd']
+            영화사이름 = request.form['영화사이름']
+            영화사분류 = request.form['영화사분류']
+            영화사대표 = request.form['영화사대표']
+
+            # 데이터베이스에 연결
+            conn = sqlite3.connect('Movie_Info.db')
+            cursor = conn.cursor()
+
+            try:
+                # 삽입 쿼리 실행
+                cursor.execute("""
+                    INSERT INTO CompanyCd (
+                        CompanyCd, CompanyNm, "영화사 분류", "영화사 대표"
+                    ) VALUES (?, ?, ?, ?)
+                """, (
+                    CompanyCd, 영화사이름, 영화사분류, 영화사대표
+                ))
+
+                # 커밋하여 데이터베이스에 반영
+                conn.commit()
+                success_message = "영화사 정보가 성공적으로 삽입되었습니다."
+            except sqlite3.IntegrityError:
+                # CompanyCd가 Primary Key라서 중복이 발생할 경우 에러 메시지 처리
+                success_message = "영화사 Code가 중복되었습니다. 다른 Code를 사용해 주세요."
+            finally:
+                # 연결 종료
+                conn.close()
+
+            # 삽입 후 성공 메시지를 같은 페이지에 표시
+            return render_template('CRUD_company.html', success_message=success_message)
+
+        # 삭제 요청 처리
+        elif action == 'delete':
+            CompanyCd = request.form['CompanyCd']
+            conn = sqlite3.connect('Movie_Info.db')
+            cursor = conn.cursor()
+
+            try:
+                # CompanyCd가 존재하는지 확인
+                cursor.execute("SELECT * FROM CompanyCd WHERE CompanyCd = ?", (CompanyCd,))
+                movie = cursor.fetchone()
+
+                if movie:
+                    # CompanyCd를 기준으로 영화 삭제
+                    cursor.execute("DELETE FROM CompanyCd WHERE CompanyCd = ?", (CompanyCd,))
+                    conn.commit()
+
+                    success_message = "영화사가 성공적으로 삭제되었습니다."
+                else:
+                    success_message = f"영화사 Code '{CompanyCd}'는 존재하지 않습니다다."
+            except sqlite3.Error as e:
+                success_message = f"영화사를 삭제하는데 문제가 발생했습니다: {e}"
+            finally:
+                conn.close()
+
+            # 삭제 후 페이지에 메시지 전달
+            return render_template('CRUD_company.html', success_message=success_message)
+
+        elif action == 'edit':
+            searchCompanyCd = request.form.get('searchCompanyCd')
+            conn = sqlite3.connect('Movie_Info.db')
+            cursor = conn.cursor()
+                
+            try:
+                cursor.execute("SELECT * FROM CompanyCd WHERE CompanyCd = ?", (searchCompanyCd,))
+                row = cursor.fetchone()
+
+                if row:
+                    # 검색 결과 매핑
+                    company_data = {
+                        'CompanyCd': row[0], '영화사이름': row[1], '영화사분류': row[2],
+                        '영화사대표': row[3]
+                    }
+                    return render_template('CRUD_company.html', update_stage="edit", company_data=company_data)
+                else:
+                    success_message = "해당 CompanyCd가 데이터베이스에 없습니다."
+                    return render_template('CRUD.html', success_message=success_message, update_stage=None)
+            except sqlite3.Error as e:
+                success_message = f"데이터베이스 오류 발생: {e}"
+                return render_template('CRUD_company.html', success_message=success_message, update_stage=None)
+            finally:
+                conn.close()
+
+        # 수정 제출 요청
+        elif action == 'update_submit':
+            CompanyCd = request.form.get('CompanyCd')
+            updated_data = (
+                request.form.get('영화사이름'), request.form.get('영화사분류'),
+                request.form.get('영화사대표'), CompanyCd
+            )
+
+            conn = sqlite3.connect('Movie_Info.db')
+            cursor = conn.cursor()
+            try:
+                cursor.execute("""
+                    UPDATE CompanyCd
+                    SET CompanyNm = ?, "영화사 분류" = ?, "영화사 대표" = ?
+                    WHERE CompanyCd = ?
+                """, updated_data)
+                conn.commit()
+                success_message = "영화 정보가 성공적으로 수정되었습니다."
+            except sqlite3.Error as e:
+                success_message = f"수정 중 오류 발생: {e}"
+            finally:
+                conn.close()
+
+            return render_template('CRUD_company.html', success_message=success_message)
+    # GET 요청 시 빈 폼을 반환
+    return render_template('CRUD_company.html', success_message=None)
 
 @app.route('/home/Search/', methods=['GET'])
 def SearchMovie():
