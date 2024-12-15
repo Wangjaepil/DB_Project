@@ -437,6 +437,7 @@ def Advanced():
     return render_template(
         'Advanced_Search.html',
         Movie_table=Movie_table,
+        total_results=total_results,
         current_page=current_page,
         total_pages=total_pages,
         page_range=page_range,
