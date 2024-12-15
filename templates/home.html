@@ -144,7 +144,7 @@
         .modal-content {
             position: relative;
             padding: 10px;
-            color: #333; 
+            color: #333;
             font-size: 30px;
         }
 
@@ -245,6 +245,9 @@
                 <label><input type="checkbox" name="genre" value="기타"> 기타</label>
             </div>
 
+            <!-- 선택 오류 메시지 표시 -->
+            <div id="genre-warning" class="warning-message"></div>
+
             <div class="date-inputs">
                 <label for="date_start">개봉 일자:</label>
                 <input type="date" id="date_start" name="date_start">
@@ -268,12 +271,16 @@
                 <label><input type="checkbox" name="Grade" value="limG">제한상영가</label>
             </div>
 
+            <!-- 선택 오류 메시지 표시 -->
+            <div id="grade-warning" class="warning-message"></div>
+
             <label for="studio">제작사:</label>
             <input type="text" id="studio" name="studio" placeholder="영화사 이름 입력">
 
             <input type="submit" value="고급 검색">
         </form>
     </main>
+
     <script>
         // 모달 열기
         document.getElementById('openModalButton').onclick = function () {
