@@ -3,10 +3,10 @@
 
 <head>
     <title>영화 검색 사이트</title>
-    
+
     <meta charset="utf-8">
     <link rel="icon" href="{{ url_for('static', filename='MIcon.ico') }}" type="image/x-icon">
-    
+
     <style>
         /* 기본 스타일 */
         body {
@@ -29,7 +29,7 @@
             margin: 0;
             font-size: 2rem;
         }
-    
+
         .crud-button {
             position: absolute;
             top: 50px;
@@ -41,7 +41,7 @@
             padding: 10px 20px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-        }  
+        }
 
         .crud-button:hover {
             background-color: #f3f3f3;
@@ -126,6 +126,46 @@
             margin-bottom: 15px;
         }
 
+        /* 모달 기본 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            width: 300px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        /* 모달 콘텐츠 스타일 */
+        .modal-content {
+            position: relative;
+            padding: 10px;
+            color: #333; 
+            font-size: 30px;
+        }
+
+        /* 닫기 버튼 스타일 */
+        .close-btn {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
         footer {
             text-align: center;
             padding: 20px;
@@ -143,17 +183,27 @@
             영화검색사이트
         </h1>
         <h1>
-         <button onclick="location.href='/home/my_page'"
-         style="margin-top: 10px; padding: 10px 20px; background-color: #d37726; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s ease;">
-        마이페이지
-         </button>
-        </h1>
-        <h1>
-            <button class="crud-button" onclick="location.href='/home/CRUD/'">
-                CRUD 페이지
+            <button onclick="location.href='/home/my_page'"
+                style="margin-top: 10px; padding: 10px 20px; background-color: #d37726; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s ease;">
+                마이페이지
             </button>
         </h1>
-        
+        <h1>
+            <button class="crud-button" id="openModalButton">
+                CRUD
+            </button>
+
+            <!-- 모달 구조 -->
+            <div id="crudModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn" id="closeModalButton">&times;</span>
+                    수정할 데이터베이스
+                    <button onclick="location.href='/home/CRUD/'">영화 정보</button>
+                </div>
+            </div>
+
+        </h1>
+
     </header>
     <main>
         <!-- 기본 검색 -->
@@ -224,6 +274,24 @@
             <input type="submit" value="고급 검색">
         </form>
     </main>
+    <script>
+        // 모달 열기
+        document.getElementById('openModalButton').onclick = function () {
+            document.getElementById('crudModal').style.display = 'block';
+        }
+
+        // 모달 닫기
+        document.getElementById('closeModalButton').onclick = function () {
+            document.getElementById('crudModal').style.display = 'none';
+        }
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function (event) {
+            if (event.target === document.getElementById('crudModal')) {
+                document.getElementById('crudModal').style.display = 'none';
+            }
+        }
+    </script>
     <footer>
         Made by 김석진, 이재필
     </footer>
