@@ -256,7 +256,7 @@ def CRUD_company():
 
                     success_message = "영화사가 성공적으로 삭제되었습니다."
                 else:
-                    success_message = f"영화사 Code '{CompanyCd}'는 존재하지 않습니다다."
+                    success_message = f"영화사 Code '{CompanyCd}'는 존재하지 않습니다."
             except sqlite3.Error as e:
                 success_message = f"영화사를 삭제하는데 문제가 발생했습니다: {e}"
             finally:
