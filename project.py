@@ -69,7 +69,7 @@ def get_poster_from_kmdb_Cd(movie_cd):
     params = {
         "collection": "kmdb_new2",
         "ServiceKey": api_key,
-        "movieCd": movie_cd,  # 영화 코드로 검색
+        "movieId": movie_cd,  # 영화 코드로 검색
         "detail": "Y"
     }
 
