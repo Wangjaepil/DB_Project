@@ -80,7 +80,7 @@ def insert_movie():
             주연배우 = request.form['주연배우']
             상영형태 = request.form['상영형태']
             관람등급 = request.form['관람등급']
-            영화사 = request.form['영화사']
+            영화사코드 = request.form['영화사코드']
 
             # 데이터베이스에 연결
             conn = sqlite3.connect('Movie_Info.db')
@@ -91,11 +91,11 @@ def insert_movie():
                 cursor.execute("""
                     INSERT INTO movie_Info (
                         movieCd, 영화명, "영화명(영어)", 제작연도, 상영시간, 개봉일자,
-                        제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사
+                        제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, CompanyCd
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     movieCd, 영화명, 영화명_영어, 제작연도, 상영시간, 개봉일자,
-                    제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사
+                    제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사코드
                 ))
 
                 # 커밋하여 데이터베이스에 반영
@@ -154,7 +154,7 @@ def insert_movie():
                         '제작연도': row[3], '상영시간': row[4], '개봉일자': row[5],
                         '제작상태': row[6], '영화유형': row[7], '제작국가': row[8],
                         '장르': row[9], '감독': row[10], '주연배우': row[11],
-                        '상영형태': row[12], '관람등급': row[13], '영화사': row[14]
+                        '상영형태': row[12], '관람등급': row[13], '영화사코드': row[14]
                     }
                     return render_template('CRUD.html', update_stage="edit", movie_data=movie_data)
                 else:
@@ -176,7 +176,7 @@ def insert_movie():
                 request.form.get('영화유형'), request.form.get('제작국가'),
                 request.form.get('장르'), request.form.get('감독'),
                 request.form.get('주연배우'), request.form.get('상영형태'),
-                request.form.get('관람등급'), request.form.get('영화사'), movieCd
+                request.form.get('관람등급'), request.form.get('영화사코드'), movieCd
             )
 
             conn = sqlite3.connect('Movie_Info.db')
@@ -185,7 +185,7 @@ def insert_movie():
                 cursor.execute("""
                     UPDATE movie_Info
                     SET 영화명 = ?, "영화명(영어)" = ?, 제작연도 = ?, 상영시간 = ?, 개봉일자 = ?, 제작상태 = ?,
-                        영화유형 = ?, 제작국가 = ?, 장르 = ?, 감독 = ?, 주연배우 = ?, 상영형태 = ?, 관람등급 = ?, 영화사 = ?
+                        영화유형 = ?, 제작국가 = ?, 장르 = ?, 감독 = ?, 주연배우 = ?, 상영형태 = ?, 관람등급 = ?, 영화사코드 = ?
                     WHERE movieCd = ?
                 """, updated_data)
                 conn.commit()
@@ -219,7 +219,7 @@ def CRUD_company():
                 # 삽입 쿼리 실행
                 cursor.execute("""
                     INSERT INTO CompanyCd (
-                        CompanyCd, CompanyNm, "영화사 분류", "영화사 대표"
+                        CompanyCd, 영화사, "영화사 분류", "영화사 대표"
                     ) VALUES (?, ?, ?, ?)
                 """, (
                     CompanyCd, 영화사이름, 영화사분류, 영화사대표
@@ -303,7 +303,7 @@ def CRUD_company():
             try:
                 cursor.execute("""
                     UPDATE CompanyCd
-                    SET CompanyNm = ?, "영화사 분류" = ?, "영화사 대표" = ?
+                    SET 영화사 = ?, "영화사 분류" = ?, "영화사 대표" = ?
                     WHERE CompanyCd = ?
                 """, updated_data)
                 conn.commit()
@@ -327,12 +327,14 @@ def SearchMovie():
     cursor.execute("PRAGMA table_info(movie_Info)")
     Attribute_name = cursor.fetchall()
     Att_name = [ATName[1] for ATName in Attribute_name][1:] #movie_Info에서 첫번째 데이터는 영화코드라서 그거 빼고 추출하기 위한 코드
+    Att_name = [name for name in Att_name if name != "CompanyCd"]
+    Att_name.append("영화사")
     Att_name.append("영화사 분류")
     Att_name.append("영화사 대표")
     Info = cursor.execute(
     'SELECT 영화명, "영화명(영어)", 제작연도, 상영시간, 개봉일자, 제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사, "영화사 분류", "영화사 대표" '
     'FROM movie_Info '
-    'LEFT JOIN CompanyCd ON movie_Info.영화사 = CompanyCd.CompanyNm '
+    'LEFT JOIN CompanyCd ON movie_Info.CompanyCd = CompanyCd.CompanyCd '
     'WHERE 영화명 = ? OR "영화명(영어)" = ?', 
     (movie_name, movie_name)).fetchall()
 
@@ -363,6 +365,7 @@ def Advanced():
     # 검색 조건 쿼리
     base_query = '''
     FROM movie_Info
+    LEFT JOIN CompanyCd ON movie_Info.CompanyCd = CompanyCd.CompanyCd
     WHERE 1=1
     '''
 

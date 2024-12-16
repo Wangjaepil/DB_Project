@@ -176,8 +176,8 @@
                 <input type="text" id="상영형태" name="상영형태">
                 <label for="관람등급">관람 등급:</label>
                 <input type="text" id="관람등급" name="관람등급">
-                <label for="영화사">영화사:</label>
-                <input type="text" id="영화사" name="영화사">
+                <label for="영화사코드">영화사코드:</label>
+                <input type="text" id="영화사코드" name="영화사코드">
                 <input type="hidden" name="action" value="insert">
                 <input type="submit" value="삽입">
             </form>
@@ -229,8 +229,8 @@
             <input type="text" id="상영형태" name="상영형태" value="{{ movie_data['상영형태'] }}">
             <label for="관람등급">관람등급:</label>
             <input type="text" id="관람등급" name="관람등급" value="{{ movie_data['관람등급'] }}">
-            <label for="영화사">영화사:</label>
-            <input type="text" id="영화사" name="영화사" value="{{ movie_data['영화사'] }}">
+            <label for="영화사코드">영화사코드:</label>
+            <input type="text" id="영화사코드" name="영화사코드" value="{{ movie_data['영화사코드'] }}">
             <input type="submit" value="수정 완료">
         </form>
         {% endif %}

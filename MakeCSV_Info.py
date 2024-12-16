@@ -3,7 +3,7 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 
 # API 키와 기본 URL
-api_key = "749cea3b1d8320b9e085ae3402483fc8" #이거 키번호 깃허브에 올리면 안될거같은디
+api_key = "b435355aedd0abd28466ab96ff2297cf" #이거 키번호 깃허브에 올리면 안될거같은디
 url = "http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.xml"
 
 # 영화 코드 모아둔 CSV 파일에서 영화 코드 읽기
@@ -47,7 +47,7 @@ for movie_cd in movie_codes:
             actors = [safe_get_text(actor) for actor in movie_info.findall(".//actors/actor/peopleNm")]  # 배우명 (최대 3명, None 처리)
             screening_type = safe_get_text(movie_info.find(".//showTypeNm"))  # 상영 형태명
             rating = safe_get_text(movie_info.find(".//watchGradeNm"))  # 관람 등급 명칭
-            production_companies = safe_get_text(movie_info.find(".//companyNm"))  # 참여 영화사 (None 처리)
+            companies = safe_get_text(movie_info.find(".//companyCd"))  
 
             # 배우명 최대 3명 추출
             actor_names = ", ".join(actors[:3])
@@ -68,7 +68,7 @@ for movie_cd in movie_codes:
                 "actor": actor_names, 
                 "showTypeNm": screening_type,
                 "watchGradeNm": rating,
-                "company": production_companies 
+                "companyCd":companies,
             })
             success_count += 1 
             print(f"성공적으로 데이터를 가져온 영화 수: {success_count}") #데이터 가져왔나 확인해보려고 씀
@@ -80,7 +80,7 @@ for movie_cd in movie_codes:
 movie_Info_df = pd.DataFrame(movie_details)
 
 # 결과 CSV로 저장하기
-output_file = "movie_Info.csv"
+output_file = "movie_Info_2.csv"
 movie_Info_df.to_csv(output_file, index=False, encoding="utf-8-sig")
 
 print(f"영화 상세 정보 CSV 파일 저장 완료: {output_file}") #끝난거 확인역할
