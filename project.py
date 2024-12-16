@@ -331,6 +331,8 @@ def SearchMovie():
     Att_name.append("영화사")
     Att_name.append("영화사 분류")
     Att_name.append("영화사 대표")
+
+    # 영화 이름 찾기
     Info = cursor.execute(
     'SELECT 영화명, "영화명(영어)", 제작연도, 상영시간, 개봉일자, 제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사, "영화사 분류", "영화사 대표" '
     'FROM movie_Info '
