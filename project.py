@@ -192,10 +192,18 @@ def insert_movie():
             conn = sqlite3.connect('Movie_Info.db')
             cursor = conn.cursor()
             try:
+                # 영화사 코드가 NULL이 아닌 경우에만 존재 여부를 확인
+                영화사코드 = request.form.get('영화사코드')
+                if 영화사코드:
+                    cursor.execute("SELECT COUNT(*) FROM CompanyCd WHERE CompanyCd = ?", (영화사코드,))
+                    company_exists = cursor.fetchone()[0]
+                    if company_exists == 0:
+                        success_message = "해당 영화사 코드가 존재하지 않습니다. 올바른 영화사 코드를 입력하세요."
+                        return render_template('CRUD.html', success_message=success_message)
                 cursor.execute("""
                     UPDATE movie_Info
                     SET 영화명 = ?, "영화명(영어)" = ?, 제작연도 = ?, 상영시간 = ?, 개봉일자 = ?, 제작상태 = ?,
-                        영화유형 = ?, 제작국가 = ?, 장르 = ?, 감독 = ?, 주연배우 = ?, 상영형태 = ?, 관람등급 = ?, 영화사코드 = ?
+                        영화유형 = ?, 제작국가 = ?, 장르 = ?, 감독 = ?, 주연배우 = ?, 상영형태 = ?, 관람등급 = ?, CompanyCd = ?
                     WHERE movieCd = ?
                 """, updated_data)
                 conn.commit()
