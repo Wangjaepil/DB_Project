@@ -95,17 +95,17 @@ def insert_movie():
                     if company_exists == 0:
                         success_message = "해당 영화사 코드가 존재하지 않습니다. 올바른 영화사 코드를 입력하세요."
                         return render_template('CRUD.html', success_message=success_message)
-                else:
-                    # 삽입 쿼리 실행
-                    cursor.execute("""
-                        INSERT INTO movie_Info (
-                            movieCd, 영화명, "영화명(영어)", 제작연도, 상영시간, 개봉일자,
-                            제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, CompanyCd
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """, (
-                        movieCd, 영화명, 영화명_영어, 제작연도, 상영시간, 개봉일자,
-                        제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사코드
-                    ))
+                
+                # 삽입 쿼리 실행
+                cursor.execute("""
+                    INSERT INTO movie_Info (
+                        movieCd, 영화명, "영화명(영어)", 제작연도, 상영시간, 개봉일자,
+                        제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, CompanyCd
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    movieCd, 영화명, 영화명_영어, 제작연도, 상영시간, 개봉일자,
+                    제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사코드
+                ))
 
                 # 커밋하여 데이터베이스에 반영
                 conn.commit()
@@ -260,6 +260,7 @@ def CRUD_company():
         elif action == 'delete':
             CompanyCd = request.form['CompanyCd']
             conn = sqlite3.connect('Movie_Info.db')
+            conn.execute("PRAGMA foreign_keys = ON;")  # 외래키 제약 활성화
             cursor = conn.cursor()
 
             try:
