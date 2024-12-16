@@ -87,25 +87,35 @@ def insert_movie():
             cursor = conn.cursor()
 
             try:
-                # 삽입 쿼리 실행
-                cursor.execute("""
-                    INSERT INTO movie_Info (
-                        movieCd, 영화명, "영화명(영어)", 제작연도, 상영시간, 개봉일자,
-                        제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, CompanyCd
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    movieCd, 영화명, 영화명_영어, 제작연도, 상영시간, 개봉일자,
-                    제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사코드
-                ))
+                if 영화사코드:
+                    # 영화사 코드가 CompanyCd 테이블에 존재하는지 확인
+                    cursor.execute("SELECT COUNT(*) FROM CompanyCd WHERE CompanyCd = ?", (영화사코드,))
+                    company_exists = cursor.fetchone()[0]
+
+                    if company_exists == 0:
+                        success_message = "해당 영화사 코드가 존재하지 않습니다. 올바른 영화사 코드를 입력하세요."
+                        return render_template('CRUD.html', success_message=success_message)
+                else:
+                    # 삽입 쿼리 실행
+                    cursor.execute("""
+                        INSERT INTO movie_Info (
+                            movieCd, 영화명, "영화명(영어)", 제작연도, 상영시간, 개봉일자,
+                            제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, CompanyCd
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        movieCd, 영화명, 영화명_영어, 제작연도, 상영시간, 개봉일자,
+                        제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사코드
+                    ))
 
                 # 커밋하여 데이터베이스에 반영
                 conn.commit()
                 success_message = "영화 정보가 성공적으로 삽입되었습니다."
+
             except sqlite3.IntegrityError:
                 # movieCd가 Primary Key라서 중복이 발생할 경우 에러 메시지 처리
                 success_message = "영화 Code가 중복되었습니다. 다른 Code를 사용해 주세요."
             finally:
-                # 연결 종료
+            # 연결 종료
                 conn.close()
 
             # 삽입 후 성공 메시지를 같은 페이지에 표시
