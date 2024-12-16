@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>영화 정보</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='MIcon.ico') }}" type="image/x-icon">
+    <style>
+        /* 전체 페이지 배경 및 기본 설정 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* 헤더 스타일 */
+        header {
+            background-color: #9e540f;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        /* 홈 버튼 스타일 */
+        .home-btn,
+        .back-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: white;
+            color: #9e540f;
+            border: 2px solid #9e540f;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .home-btn {
+            left: 20px;
+        }
+
+        .back-btn {
+            left: 100px;
+        }
+
+        .home-btn:hover,
+        .back-btn:hover {
+            background-color: #b98554;
+            color: white;
+        }
+
+        /* 메인 컨텐츠 정렬 */
+        .content {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* 하이라이트 텍스트 */
+        .highlight {
+            color: #9e540f;
+            font-weight: bold;
+            font-size: 30px;
+        }
+
+        /* 스크랩 버튼 스타일 */
+        .scrap-btn {
+            background-color: #b98554;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .scrap-btn:hover {
+            background-color: #b98554;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <!-- 뒤로가기 버튼 -->
+        <a href="javascript:history.back()" class="back-btn">뒤로 가기</a>
+        <!-- 홈 버튼 -->
+        <a href="/home" class="home-btn">홈</a>
+        <h1><img src="{{ url_for('static', filename='Icon.jpg') }}" alt="영화검색사이트" style="width: 70px; height: auto;">영화
+            정보</h1>
+    </header>
+    <div class="content">
+        <p><span class="highlight">영화 제목 : {{ movie[1] }}</span></p>
+
+        <!-- 포스터 이미지 -->
+        {% if poster_url %}
+        <img src="{{ poster_url }}" alt="Movie Poster" width="200">
+        {% else %}
+        <p>No poster available.</p>
+        {% endif %}
+
+        <!-- 영화 정보 리스트 -->
+        <ul>
+            {% for att, movie in zip(att_names, movie) %}
+            {% if movie %}
+            <li>{{ att }} : {{ movie }}</li>
+            {% else %}
+            <li>{{ att }} : 정보 없음</li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+
+        <!-- 스크랩 버튼 -->
+        <button class="scrap-btn" onclick="scrapMovie()">스크랩</button>
+    </div>
+
+    <script>
+        function scrapMovie() {
+            // 영화 제목을 가져오기
+            const movieTitle = "{{ movie[1] }}";
+
+            // 로컬 스토리지에서 현재 영화 목록 가져오기
+            let scrapMovies = JSON.parse(localStorage.getItem('scrapMovies')) || [];
+
+            // 현재 영화가 이미 스크랩되어 있지 않으면 추가
+            if (!scrapMovies.some(movie => movie.title === movieTitle)) {
+                scrapMovies.push({ title: movieTitle, poster: "{{ poster_url }}" });
+                localStorage.setItem('scrapMovies', JSON.stringify(scrapMovies));
+            }
+
+            // 사용자가 마이페이지로 이동할지 묻는 확인창
+            const moveToMypage = confirm("이 영화를 마이페이지에 추가했습니다. 마이페이지로 이동하시겠습니까?");
+
+            if (moveToMypage) {
+                window.location.href = "/home/my_page"; // 마이페이지로 이동
+            }
+        }
+    </script>
+</body>
+
+</html>

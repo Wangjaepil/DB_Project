@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 import requests
 
@@ -58,6 +58,47 @@ def get_poster_from_kmdb(movie_name):
     except requests.exceptions.RequestException as e:
         print(f"Error fetching data from KMDb API: {e}")
         return None
+
+
+def get_poster_from_kmdb_Cd(movie_cd):
+    # KMDb API 엔드포인트 및 API 키
+    api_url = "http://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp"
+    api_key = "1YPAB4TIEY4J2E16C4U9"  # 발급받은 API 키를 입력
+
+    # API 요청 파라미터
+    params = {
+        "collection": "kmdb_new2",
+        "ServiceKey": api_key,
+        "movieCd": movie_cd,  # 영화 코드로 검색
+        "detail": "Y"
+    }
+
+    try:
+        response = requests.get(api_url, params=params)
+        response.raise_for_status()  # HTTP 에러 발생 시 예외 처리
+        data = response.json()  # JSON 응답 파싱
+
+        # 포스터 URL 추출 (첫 번째 포스터만 선택)
+        if "Data" in data and data["Data"]:
+            movie_data = data["Data"][0]
+            
+            # 'Result' 키가 있는지 확인하고, 없으면 빈 리스트로 처리
+            result_data = movie_data.get("Result", [])
+            if result_data:
+                posters = result_data[0].get("posters", None)
+                if posters:
+                    poster_url = posters.split('|')[0]  # 첫 번째 포스터 URL만 사용
+                    return poster_url
+            else:
+                print("No 'Result' data found.")
+        else:
+            print("No 'Data' or 'Data' is empty.")
+        return None  # 결과가 없을 경우
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching data from KMDb API: {e}")
+        return None
+    
 
 @app.route('/home/CRUD/', methods=['GET', 'POST'])
 def insert_movie():
@@ -338,34 +379,96 @@ def CRUD_company():
 
 @app.route('/home/Search/', methods=['GET'])
 def SearchMovie():
-    movie_name = request.args.get("q")  # HTML 폼에서 전달된 'q' 값, 즉 이름 입력한 거를 가져옴
+    movie_name = request.args.get("q")  # 영화명
     db = sqlite3.connect('.//movie_Info.db')
     cursor = db.cursor()
 
     # 데이터베이스에서 영화 정보 검색
     cursor.execute("PRAGMA table_info(movie_Info)")
     Attribute_name = cursor.fetchall()
-    Att_name = [ATName[1] for ATName in Attribute_name][1:] #movie_Info에서 첫번째 데이터는 영화코드라서 그거 빼고 추출하기 위한 코드
+    Att_name = [ATName[1] for ATName in Attribute_name][1:]  # 첫 번째는 영화코드라서 제외
     Att_name = [name for name in Att_name if name != "CompanyCd"]
     Att_name.append("영화사")
     Att_name.append("영화사 분류")
     Att_name.append("영화사 대표")
 
-    # 영화 이름 찾기
+    # 영화 이름으로 검색
     Info = cursor.execute(
-    'SELECT 영화명, "영화명(영어)", 제작연도, 상영시간, 개봉일자, 제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사, "영화사 분류", "영화사 대표" '
-    'FROM movie_Info '
-    'LEFT JOIN CompanyCd ON movie_Info.CompanyCd = CompanyCd.CompanyCd '
-    'WHERE 영화명 = ? OR "영화명(영어)" = ?', 
-    (movie_name, movie_name)).fetchall()
-
+        'SELECT 영화명, "영화명(영어)", 제작연도, 상영시간, 개봉일자, 제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사, "영화사 분류", "영화사 대표" '
+        'FROM movie_Info '
+        'LEFT JOIN CompanyCd ON movie_Info.CompanyCd = CompanyCd.CompanyCd '
+        'WHERE 영화명 = ? OR "영화명(영어)" = ?', 
+        (movie_name, movie_name)).fetchall()
     db.close()
 
     # KMDb API에서 포스터 URL 가져오기
     poster_url = get_poster_from_kmdb(movie_name)
 
-    return render_template("search.html", name=movie_name, Att_name=Att_name, Info=Info, zip=zip, poster_url=poster_url)
+    if len(Info) > 1:
+        # 영화명이 중복되는 경우, 상세 페이지로 리디렉션
+        return redirect(url_for('SearchDetail', movie_name=movie_name))
+    elif len(Info) == 1:
+        # 영화명이 유일한 경우, 바로 상세 페이지로 이동
+        return render_template("search.html", name=movie_name, Att_name=Att_name, Info=Info, zip=zip, poster_url=poster_url)
+
     
+@app.route('/home/Search/Detail/', methods=['GET'])
+def SearchDetail():
+    movie_name = request.args.get("movie_name")
+    db = sqlite3.connect('.//movie_Info.db')
+    cursor = db.cursor()
+
+    # 영화코드으로 검색 결과 가져오기
+    Info = cursor.execute(
+        'SELECT MovieCd, 영화명, "영화명(영어)", 제작연도, 상영시간, 개봉일자, 제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사, "영화사 분류", "영화사 대표" '
+        'FROM movie_Info '
+        'LEFT JOIN CompanyCd ON movie_Info.CompanyCd = CompanyCd.CompanyCd '
+        'WHERE 영화명 = ? OR "영화명(영어)" = ?', 
+        (movie_name, movie_name)).fetchall()
+    db.close()
+
+    # 영화 코드 목록과 함께 상세 페이지 렌더링
+    return render_template('search_detail.html', Movie_table=Info)
+
+
+
+@app.route('/movie_detail/<movie_code>')
+def movie_detail(movie_code):
+    print(f"Movie Code: {movie_code}")  # movie_code가 제대로 전달되는지 확인
+    db = sqlite3.connect('.//movie_Info.db')
+    cursor = db.cursor()
+
+    # 영화 코드로 검색 결과 가져오기
+    Info = cursor.execute(
+        'SELECT MovieCd, 영화명, "영화명(영어)", 제작연도, 상영시간, 개봉일자, 제작상태, 영화유형, 제작국가, 장르, 감독, 주연배우, 상영형태, 관람등급, 영화사, "영화사 분류", "영화사 대표" '
+        'FROM movie_Info '
+        'LEFT JOIN CompanyCd ON movie_Info.CompanyCd = CompanyCd.CompanyCd '
+        'WHERE MovieCd = ?', 
+        (movie_code,)).fetchall()
+    db.close()
+
+    if not Info:
+        return "영화 정보가 없습니다."
+
+    # KMDb API에서 포스터 URL 가져오기 (포스터가 없을 경우 빈 문자열을 반환)
+    poster_url = get_poster_from_kmdb_Cd(movie_code) or ""
+
+    # 속성 이름 리스트
+    att_names = [
+        "영화 코드", "영화명", "영화명(영어)", "제작연도", "상영시간", "개봉일자", 
+        "제작상태", "영화유형", "제작국가", "장르", "감독", "주연배우", 
+        "상영형태", "관람등급", "영화사", "영화사 분류", "영화사 대표"
+    ]
+
+    # 영화 정보 페이지로 전달 (포스터가 없으면 빈 문자열 전달)
+    return render_template('movie_detail.html', 
+                           movie=Info[0], 
+                           att_names=att_names, 
+                           poster_url=poster_url,
+                           zip=zip,
+                           name=Info[0][1])
+
+
 
 @app.route('/home/Advanced_Search/')
 def Advanced():

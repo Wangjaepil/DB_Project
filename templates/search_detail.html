@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>영화 선택</title>
+    <meta charset="UTF-8">
+    <link rel="icon" href="{{ url_for('static', filename='MIcon.ico') }}" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #9e540f;
+            color: white;
+        }
+
+        .select-button {
+            padding: 10px 20px;
+            background-color: #9e540f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* 홈 버튼 스타일 */
+        .home-btn,
+        .back-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: white;
+            color: #9e540f;
+            border: 2px solid #9e540f;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .home-btn {
+            left: 20px;
+        }
+
+        .back-btn {
+            left: 100px;
+        }
+
+        .home-btn:hover,
+        .back-btn:hover {
+            background-color: #b98554;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>영화명이 중복되었습니다. 선택하세요:</h1>
+        <!-- 뒤로가기 버튼 -->
+        <a href="javascript:history.back()" class="back-btn">뒤로 가기</a>
+        <!-- 홈 버튼 -->
+        <a href="/home" class="home-btn">홈</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>영화명</th>
+                    <th>장르</th>
+                    <th>개봉일자</th>
+                    <th>등장인물</th>
+                    <th>국가</th>
+                    <th>감독</th>
+                    <th>선택</th> <!-- 영화 선택을 위한 열 추가 -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for movie_info in Movie_table %}
+                <tr>
+                    <!-- 영화명, 장르, 개봉일자 등, movie_info 테이블의 인덱스를 맞추어 표시 -->
+                    <td>{{ movie_info[1] }}</td> <!-- 영화명 -->
+                    <td>{{ movie_info[9] }}</td> <!-- 장르 -->
+                    <td>{{ movie_info[5] }}</td> <!-- 개봉일자 -->
+                    <td>{{ movie_info[11] }}</td> <!-- 등장인물 -->
+                    <td>{{ movie_info[8] }}</td> <!-- 국가 -->
+                    <td>{{ movie_info[10] }}</td> <!-- 감독 -->
+                    <td>
+                        <!-- 영화 코드로 상세 페이지로 이동 (movie_info 테이블에서 영화 코드 위치에 맞추어 인덱스 수정) -->
+                        <a href="{{ url_for('movie_detail', movie_code=movie_info[0]) }}">{{ movie_info[0] }}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>
